@@ -1,0 +1,66 @@
+{
+  "name": "redux-status",
+  "version": "0.1.0",
+  "description": "A higher-order component decorator for painless UI state management in Redux and React.",
+  "author": "Vlad Zhukov (http://github.com/Vlad-Zhukov)",
+  "license": "MIT",
+  "repository": "Vlad-Zhukov/redux-status",
+  "bugs": {
+    "url": "https://github.com/Vlad-Zhukov/redux-status/issues"
+  },
+  "main": "./dist/redux-status.cjs.js",
+  "module": "./dist/redux-status.esm.js",
+  "jsnext:main": "./dist/redux-status.esm.js",
+  "scripts": {
+    "build": "rimraf dist/ && rollup -c",
+    "test": "jest",
+    "lint": "eslint '**/*.js'",
+    "prettier": "prettier-eslint --write '**/*.js'",
+    "prepublish": "yarn run lint && yarn run build && yarn run test"
+  },
+  "dependencies": {
+    "prop-types": "^15.5.10"
+  },
+  "devDependencies": {
+    "babel-eslint": "^7.2.3",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-preset-env": "^1.5.2",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb": "^15.0.1",
+    "eslint-plugin-import": "^2.3.0",
+    "eslint-plugin-jsx-a11y": "^5.0.3",
+    "eslint-plugin-react": "^7.0.1",
+    "jest": "^20.0.4",
+    "prettier-eslint-cli": "^4.0.4",
+    "react": "^15.5.4",
+    "react-redux": "^5.0.5",
+    "redux": "^3.6.0",
+    "rimraf": "^2.6.1",
+    "rollup": "^0.42.0",
+    "rollup-plugin-babel": "^2.7.1"
+  },
+  "peerDependencies": {
+    "react": ">=15",
+    "react-redux": "^5.0.0",
+    "redux": "^3.0.0"
+  },
+  "keywords": [
+    "redux-status",
+    "redux",
+    "react",
+    "reactjs",
+    "react-redux",
+    "decorator"
+  ],
+  "files": [
+    "src",
+    "dist"
+  ],
+  "jest": {
+    "roots": [
+      "<rootDir>/__tests__/"
+    ]
+  }
+}
