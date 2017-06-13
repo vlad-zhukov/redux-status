@@ -8,7 +8,7 @@ export default {
 
     plugins: [babel()],
 
-    external: ['react', 'redux', 'react-redux', 'prop-types'],
+    external: ['react', 'redux', 'react-redux', 'prop-types', 'hoist-non-react-statics'],
 
     targets: [
         {
