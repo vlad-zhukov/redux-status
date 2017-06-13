@@ -1,7 +1,7 @@
-process.env.NODE_ENV = 'development';
-
 import babel from 'rollup-plugin-babel';
 import pkg from './package.json';
+
+process.env.NODE_ENV = 'development';
 
 export default {
     entry: './src/index.js',
