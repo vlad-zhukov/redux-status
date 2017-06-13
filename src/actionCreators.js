@@ -8,11 +8,10 @@ export function initialize(statusName, config) {
     };
 }
 
-export function destroy(statusName, persist) {
+export function destroy(statusName) {
     return {
         type: actionTypes.DESTROY,
         name: statusName,
-        meta: {persist},
     };
 }
 

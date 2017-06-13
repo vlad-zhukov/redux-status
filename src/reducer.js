@@ -1,7 +1,6 @@
 import * as actionTypes from './actionTypes';
 
 export default function reduxStatusReducer(state, {type, name, payload}) {
-    /* , meta */
     if (!state) {
         return {
             values: {},
@@ -19,7 +18,12 @@ export default function reduxStatusReducer(state, {type, name, payload}) {
             }
             else {
                 nextValues[name] = {...payload.initialValues};
-                nextMeta[name] = {...payload, count: 1};
+                nextMeta[name] = {
+                    name: payload.name,
+                    initialValues: payload.initialValues,
+                    persist: payload.persist,
+                    count: 1,
+                };
             }
 
             return {

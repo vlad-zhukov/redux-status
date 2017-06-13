@@ -1,7 +1,7 @@
 {
   "name": "redux-status",
   "version": "0.1.0",
-  "description": "A higher-order component decorator for painless UI state management in Redux and React.",
+  "description": "A higher-order component decorator for painless state management with Redux and React.",
   "author": "Vlad Zhukov (http://github.com/Vlad-Zhukov)",
   "license": "MIT",
   "repository": "Vlad-Zhukov/redux-status",
@@ -14,11 +14,12 @@
   "scripts": {
     "build": "rimraf dist/ && rollup -c",
     "test": "jest",
-    "lint": "eslint '**/*.js'",
-    "prettier": "prettier-eslint --write '**/*.js'",
+    "lint": "eslint **/*.js",
+    "prettier": "prettier-eslint --write **/*.js",
     "prepublish": "yarn run lint && yarn run build && yarn run test"
   },
   "dependencies": {
+    "hoist-non-react-statics": "^1.2.0",
     "prop-types": "^15.5.10"
   },
   "devDependencies": {

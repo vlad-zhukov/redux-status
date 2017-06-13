@@ -1,5 +1,5 @@
-# redux-status · [![npm](https://img.shields.io/npm/v/redux-status.svg)](https://www.npmjs.com/package/redux-status)
-> A higher-order component decorator for painless UI state management in Redux and React.
+# redux-status · [![npm](https://img.shields.io/npm/v/redux-status.svg)](https://npm.im/redux-status)
+> A higher-order component decorator for painless state management with Redux and React.
 
 ## Table of Contents
 - [Install](#install)
@@ -30,7 +30,7 @@ const reducers = combineReducers({
 const store = createStore(reducers);
 ```
 
-__Step 2:__ Connect components with `reduxStatus` decorator:
+__Step 2:__ Connect components with the `reduxStatus` decorator:
 ```js
 import React, {PureComponent} from 'react';
 import {reduxStatus} from 'redux-status';
