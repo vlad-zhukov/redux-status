@@ -6,6 +6,10 @@
 - [Usage](#usage)
 - [API](#api)
   - [`reduxStatus(options)`](#reduxstatusoptions)
+  - [`reducer`](#reducer)
+  - [`selectors`](#selectors)
+  - [`actionTypes`](#actiontypes)
+  - [`actionCreators`](#actioncreators)
 
 ## Install
 ```bash
@@ -23,6 +27,8 @@ import {combineReducers, createStore} from 'redux';
 import {reducer as statusReducer} from 'redux-status';
 
 const reducers = combineReducers({
+    // 'status' is the default name reduxStatus uses,
+    // it can be overriden with the getStatusState option
     status: statusReducer,
     // other reducers
 });
@@ -69,5 +75,37 @@ class Counter extends PureComponent {
 ```
 
 ## API
-
 ### `reduxStatus(options)`
+__Arguments__
+- `options` _(Object)_: Available properties:
+  - `name` _(String)_: A key where the state will be stored under the `status` reducer.
+  - `[initialValues]` _(Object)_: Values which will be used during initialization, they can have any shape. Defaults to `{}`.
+  - `[persist]` _(Boolean)_: If `false`, the state related to that `name` will be removed when the last component using it unmounts. Defaults to `true`.
+  - `[getStatusState]` _(Function)_: A function that takes the entire Redux state and returns the state slice where the `redux-status` was mounted. Defaults to `state => state.status`.
+
+__Instance props__
+- `status` _(Object)_
+- `setStatus` _(Function)_
+- `setStatusTo` _(Function)_
+- `initialize` _(Function)_
+- `destroy` _(Function)_
+- `initialValues` _(Object)_
+- `persist` _(Boolean)_
+- `[getStatusState]` _(Function)_
+
+### `reducer`
+
+### `selectors`
+- `selectors.getStatusValue(statusName, [getStatusState])`
+- `selectors.getStatusMeta(statusName, [getStatusState])`
+
+### `actionTypes`
+- `actionTypes.INITIALIZE`
+- `actionTypes.DESTROY`
+- `actionTypes.UPDATE`
+- `actionTypes._prefix`
+
+### `actionCreators`
+- `actionCreators.initialize(statusName, config)`
+- `actionCreators.destroy(statusName)`
+- `actionCreators.update(statusName, payload)`

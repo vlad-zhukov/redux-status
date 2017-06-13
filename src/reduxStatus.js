@@ -52,9 +52,6 @@ export default function (options) {
             };
 
             componentWillMount() {
-                console.log('PROPS', this.props);
-                // const {name, initialValues, persist, getStatusState} = this.props;
-                // config = assignDefined(config, this.props, ['initialValues', 'persist', 'getStatusState']);
                 this.props.initialize();
             }
 
@@ -69,9 +66,9 @@ export default function (options) {
             }
         }
 
-        const ConnectedReduxStatus = hoistStatics(connector(ReduxStatus), WrappedComponent);
-        ConnectedReduxStatus.defaultProps = config;
+        const ConnectedStatus = hoistStatics(connector(ReduxStatus), WrappedComponent);
+        ConnectedStatus.defaultProps = config;
 
-        return ConnectedReduxStatus;
+        return ConnectedStatus;
     };
 }
