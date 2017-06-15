@@ -3,7 +3,7 @@ const {
     reducer,
     selectors,
     actions,
-    actionTypes
+    actionTypes,
 } = require('../dist/redux-status.cjs');
 
 describe('import-bundle-cjs', () => {

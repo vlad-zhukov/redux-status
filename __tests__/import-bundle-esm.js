@@ -3,7 +3,7 @@ import {
     reducer,
     selectors,
     actions,
-    actionTypes
+    actionTypes,
 } from '../dist/redux-status.esm';
 
 describe('import-bundle-esm', () => {

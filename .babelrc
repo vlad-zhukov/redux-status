@@ -9,7 +9,7 @@
         "stage-0"
       ]
     },
-    "development": {
+    "production": {
       "presets": [
         ["env", {
           "targets": {"node": 6, "browsers": ["> 1%"]},
