@@ -1,10 +1,4 @@
-const {
-    reduxStatus,
-    reducer,
-    selectors,
-    actions,
-    actionTypes,
-} = require('../dist/redux-status.cjs');
+const {reduxStatus, reducer, selectors, actions, actionTypes} = require('../dist/redux-status.cjs');
 
 describe('import-bundle-cjs', () => {
     it('should export properly', () => {
