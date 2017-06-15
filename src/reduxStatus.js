@@ -20,7 +20,7 @@ export default function (options = {}) {
             (state, props) => {
                 if (typeof props.name !== 'string') {
                     throw new TypeError(
-                        "ReduxStatus: Parameter 'name' is required and must be a 'string'," +
+                        "ReduxStatus: Argument 'name' is required and must be a 'string'," +
                             `but got: '${typeof props.name}'.`
                     );
                 }

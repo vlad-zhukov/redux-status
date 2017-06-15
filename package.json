@@ -15,7 +15,7 @@
     "build": "rimraf dist/ && rollup -c",
     "test": "jest",
     "lint": "eslint \"**/*.js\"",
-    "prettier": "prettier-eslint --write \"**/*.js\"",
+    "prettier": "prettier-eslint \"**/*.js\" --write",
     "prepublishOnly": "yarn run lint && yarn run build && yarn run test"
   },
   "dependencies": {
