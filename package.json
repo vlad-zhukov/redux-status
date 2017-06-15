@@ -1,6 +1,6 @@
 {
   "name": "redux-status",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "A higher-order component decorator for painless state management with Redux and React.",
   "author": "Vlad Zhukov (http://github.com/Vlad-Zhukov)",
   "license": "MIT",
