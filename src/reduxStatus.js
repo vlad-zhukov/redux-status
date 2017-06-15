@@ -6,7 +6,7 @@ import * as actionCreators from './actionCreators';
 import {getStatusValue} from './selectors';
 import {getDisplayName} from './helpers';
 
-export default function (options) {
+export default function (options = {}) {
     const config = {
         name: undefined,
         initialValues: {},
