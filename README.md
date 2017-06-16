@@ -87,6 +87,7 @@ class Counter extends PureComponent {
 Example apps can be found under the `examples/` directory. They are ported from the official [Redux repository](https://github.com/reactjs/redux/tree/master/examples), so you can compare both implementations.
 
 - [Counter](https://github.com/Vlad-Zhukov/redux-status/tree/master/examples/counter)
+- [Async](https://github.com/Vlad-Zhukov/redux-status/tree/master/examples/async)
 
 ## API
 
