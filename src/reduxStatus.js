@@ -34,6 +34,7 @@ export default function (options = {}) {
                 destroy: () => dispatch(actionCreators.destroy(props.name)),
                 setStatus: payload => dispatch(actionCreators.update(props.name, payload)),
                 setStatusTo: (name, payload) => dispatch(actionCreators.update(name, payload)),
+                dispatch,
             })
         );
 
