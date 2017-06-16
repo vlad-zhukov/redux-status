@@ -11,18 +11,16 @@ const connector = reduxStatus({
 
 export class Counter extends PureComponent {
     static propTypes = {
-        status: PropTypes.object.isRequired,
+        status: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
         setStatus: PropTypes.func.isRequired,
     };
 
     increment = () => {
-        const {status, setStatus} = this.props;
-        setStatus({value: status.value + 1});
+        this.props.setStatus(s => ({value: s.value + 1}));
     };
 
     decrement = () => {
-        const {status, setStatus} = this.props;
-        setStatus({value: status.value - 1});
+        this.props.setStatus(s => ({value: s.value - 1}));
     };
 
     incrementIfOdd = () => {

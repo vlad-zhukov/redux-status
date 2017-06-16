@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import {createStore, combineReducers} from 'redux';
 import {Provider} from 'react-redux';
 import {reducer as statusReducer} from 'redux-status';
-import Counter from './components/Counter';
+import ConnectedCounter from './components/Counter';
 
 const reducers = combineReducers({
     status: statusReducer,
@@ -13,7 +13,7 @@ const store = createStore(reducers);
 
 ReactDOM.render(
     <Provider store={store}>
-        <Counter />
+        <ConnectedCounter />
     </Provider>,
     document.getElementById('root')
 );
