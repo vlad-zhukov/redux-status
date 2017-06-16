@@ -12,6 +12,8 @@ export default function (options = {}) {
         initialValues: {},
         persist: true,
         getStatusState: undefined,
+        statusRef: () => {},
+        statusWrappedRef: () => {},
         ...options,
     };
 
@@ -44,6 +46,8 @@ export default function (options = {}) {
             /* eslint-disable react/require-default-props */
             static propTypes = {
                 name: PropTypes.string.isRequired,
+                statusRef: PropTypes.func,
+                statusWrappedRef: PropTypes.func,
                 initialValues: PropTypes.object, // eslint-disable-line react/forbid-prop-types
                 persist: PropTypes.bool,
                 getStatusState: PropTypes.func,
@@ -53,6 +57,7 @@ export default function (options = {}) {
             };
 
             componentWillMount() {
+                this.props.statusRef(this);
                 this.props.initialize();
             }
 
@@ -61,9 +66,9 @@ export default function (options = {}) {
             }
 
             render() {
-                const {name, status, ...rest} = this.props;
+                const {name, statusRef, statusWrappedRef, status, ...rest} = this.props;
                 if (!status) return null;
-                return <WrappedComponent statusName={name} status={status} {...rest} />;
+                return <WrappedComponent {...rest} ref={statusWrappedRef} statusName={name} status={status} />;
             }
         }
 
