@@ -58,24 +58,24 @@ import {reduxStatus} from 'redux-status';
     },
 })
 class Counter extends PureComponent {
-    _onClickIncrease = () => {
-        const {status, setStatus} = this.props;
-        setStatus({counter: status.counter + 1});
+    increment = () => {
+        this.props.setStatus(prevStatus => ({
+            counter: prevStatus.counter + 1,
+        }));
     }
 
-    _onClickDecrease = () => {
-        const {status, setStatus} = this.props;
-        setStatus({counter: status.counter - 1});
+    decrement = () => {
+        this.props.setStatus(prevStatus => ({
+            counter: prevStatus.counter - 1,
+        }));
     }
 
     render() {
-        const {status, setStatus} = this.props;
-
         return (
             <div>
-                <p>{status.counter}</p>
-                <button onClick={this._onClickIncrease}>Increase</button>
-                <button onClick={this._onClickDecrease}>Decrease</button>
+                <p>{this.props.status.counter}</p>
+                <button onClick={this.increment}>Increment</button>
+                <button onClick={this.decrement}>Decrement</button>
             </div>
         );
     }
@@ -109,8 +109,8 @@ __Instance props__
 The following props will be passed down to the wrapped component.
 
 - `status` _(Object)_
-- `setStatus(nextStatus)` _(Function)_: The `nextStatus` will be merged with the current `status`.
-- `setStatusTo(statusName, nextStatus)` _(Function)_
+- `setStatus(nextStatus)` _(Function)_: If the `nextStatus` is a function, it takes a current status as an argument and must return an object that will be shallow merged with the current `status`. If the `nextStatus` is an object, it will be shallow merged directly.
+- `setStatusTo(statusName, nextStatus)` _(Function)_: Similar to `setStatus()` but also takes in a `statusName` as the first argument. Recommended for setting data to another statuses.
 - `initialize(config)` _(Function)_
 - `destroy()` _(Function)_
 

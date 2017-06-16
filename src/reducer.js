@@ -52,9 +52,10 @@ export default function reduxStatusReducer(state, {type, name, payload}) {
 
         case actionTypes.UPDATE: {
             const nextValues = {...state.values};
-            nextValues[name] = {...nextValues[name], ...payload};
-
             const nextMeta = {...state.meta};
+
+            const payloadResult = typeof payload === 'function' ? payload(nextValues[name]) : payload;
+            nextValues[name] = {...nextValues[name], ...payloadResult};
 
             return {
                 values: nextValues,
