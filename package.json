@@ -12,7 +12,7 @@
   "module": "./dist/redux-status.esm.js",
   "jsnext:main": "./dist/redux-status.esm.js",
   "scripts": {
-    "build": "rimraf dist/ && rollup -c",
+    "build": "rimraf dist/ && cross-env NODE_ENV=production rollup -c",
     "test": "jest",
     "lint": "eslint \"**/*.js\"",
     "prettier": "prettier-eslint \"**/*.js\" --write",
@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "hoist-non-react-statics": "^1.2.0",
+    "moize": "^2.3.3",
     "prop-types": "^15.5.10"
   },
   "devDependencies": {
@@ -28,16 +29,17 @@
     "babel-preset-env": "^1.5.2",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
+    "cross-env": "^5.0.1",
     "eslint": "^3.19.0",
     "eslint-config-airbnb": "^15.0.1",
-    "eslint-plugin-import": "^2.3.0",
+    "eslint-plugin-import": "^2.6.0",
     "eslint-plugin-jsx-a11y": "^5.0.3",
     "eslint-plugin-react": "^7.1.0",
     "jest": "^20.0.4",
     "prettier-eslint-cli": "^4.1.1",
     "react": "^15.6.1",
     "react-redux": "^5.0.5",
-    "redux": "^3.6.0",
+    "redux": "^3.7.0",
     "rimraf": "^2.6.1",
     "rollup": "^0.43.0",
     "rollup-plugin-babel": "^2.7.1"

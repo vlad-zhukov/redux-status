@@ -9,6 +9,7 @@
 - [Examples](#examples)
 - [API](#api)
   - [`reduxStatus(options)`](#reduxstatusoptions)
+  - [`reduxStatusAsync(options)`](#reduxstatusasyncoptions)
   - [`reducer`](#reducer)
   - [`selectors`](#selectors)
   - [`actions`](#actions)
@@ -30,7 +31,7 @@ $ npm install --save redux-status
 
 __Step 1:__ Add the `redux-status` reducer to the Redux store:
 
-```js
+```jsx
 import {combineReducers, createStore} from 'redux';
 import {reducer as statusReducer} from 'redux-status';
 
@@ -47,7 +48,7 @@ const store = createStore(reducers);
 
 __Step 2:__ Connect components with the `reduxStatus` decorator:
 
-```js
+```jsx
 import React, {PureComponent} from 'react';
 import {reduxStatus} from 'redux-status';
 
@@ -122,6 +123,60 @@ These props are the ones that have been used during initialization. They are not
 - `persist` _(Boolean)_
 - `[getStatusState(state)]` _(Function)_
 
+---
+
+### `reduxStatusAsync([options])`
+
+__Arguments__
+
+1. `[options]` _(Object)_: Arguments that will be merged with the default config. Setting `options` here is optional as React props can be used instead. Defaults to `{}`. Available properties:
+    - `[name]` _(String)_: A key where the stat1e will be stored under the `status` reducer. It's an optional property in `options`, but a required one in general. If it wasn't set here, it must be set with React props.
+    - `[values]` _(Function)_: A function that takes `props` and must return an object of objects.
+
+__Returns__
+
+A function, that accepts a React component, and returns a higher-order React component. It uses [`reduxStatus()`](#reduxstatusoptions) under the hood.
+
+__Usage__
+
+```jsx
+import React, {PureComponent} from 'react';
+import {reduxStatusAsync} from 'redux-status';
+
+@reduxStatusAsync({
+    name: 'AsyncExample', // 'name' is a required property
+    values: props => ({
+        reddit: {
+            args: [props.reddit],
+            promise: reddit => fetch(`https://www.reddit.com/r/${reddit}.json`)
+                .then(res => res.json())
+                .then(res => res.data.children),
+        },
+    }),
+})
+class Async extends PureComponent {
+    render() {
+        const {status, reddit} = this.props;
+        const {pending, refreshing, value} = status.reddit;
+
+        if (!value) {
+            return pending ? <h2>Loading...</h2> : <h2>Empty.</h2>;
+        }
+
+        return (
+            <div style={{opacity: pending || refreshing ? 0.5 : 1}}>
+                <ul>
+                    {posts.map((post, i) =>
+                        <li key={i}>{post.data.title}</li>)}
+                </ul>
+            </div>
+        );
+    }
+}
+```
+
+---
+
 ### `reducer`
 
 A status reducer that should be mounted to the Redux store under the `status` key.
@@ -129,6 +184,7 @@ A status reducer that should be mounted to the Redux store under the `status` ke
 If you have to mount it to the key other than `status`, you may provide a `getStatusState()` function to the [`reduxStatus()`](#reduxstatusoptions) decorator.
 
 __Usage__
+
 ```js
 import {combineReducers, createStore} from 'redux';
 import {reducer as statusReducer} from 'redux-status';
@@ -140,6 +196,8 @@ const reducers = combineReducers({
 
 const store = createStore(reducers);
 ```
+
+---
 
 ### `selectors`
 
@@ -158,6 +216,8 @@ __Arguments__
 
 1. `statusName` _(String)_: The name of the status you are connecting to. Must be the same as the `name` you gave to [`reduxStatus()`](#reduxstatusoptions).
 2. `[getStatusState]` _(Function)_: A function that takes the entire Redux state and returns the state slice where the `redux-status` was mounted. Defaults to `state => state.status`.
+
+---
 
 ### `actions`
 
@@ -183,6 +243,8 @@ __Arguments__
 1. `statusName` _(String)_
 2. `payload` _(Object)_
 
+---
+
 ### `actionTypes`
 
 An object with Redux action types.
@@ -191,3 +253,5 @@ An object with Redux action types.
 - `DESTROY` _(String)_
 - `UPDATE` _(String)_
 - `prefix` _(String)_
+
+---

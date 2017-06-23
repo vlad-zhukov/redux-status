@@ -7,16 +7,6 @@ import {getStatusValue} from './selectors';
 import {getDisplayName} from './helpers';
 
 export default function (options = {}) {
-    const config = {
-        name: undefined,
-        initialValues: {},
-        persist: true,
-        getStatusState: undefined,
-        statusRef: () => {},
-        statusWrappedRef: () => {},
-        ...options,
-    };
-
     return (WrappedComponent) => {
         const connector = connect(
             (state, props) => {
@@ -47,13 +37,15 @@ export default function (options = {}) {
             static propTypes = {
                 name: PropTypes.string.isRequired,
                 statusRef: PropTypes.func,
-                statusWrappedRef: PropTypes.func,
+                wrappedRef: PropTypes.func,
                 initialValues: PropTypes.object, // eslint-disable-line react/forbid-prop-types
                 persist: PropTypes.bool,
                 getStatusState: PropTypes.func,
                 status: PropTypes.object, // eslint-disable-line react/forbid-prop-types
                 initialize: PropTypes.func,
                 destroy: PropTypes.func,
+                setStatus: PropTypes.func,
+                setStatusTo: PropTypes.func,
             };
 
             componentWillMount() {
@@ -65,15 +57,31 @@ export default function (options = {}) {
                 this.props.destroy();
             }
 
+            setStatus(payload) {
+                this.props.setStatus(payload);
+            }
+
+            setStatusTo(name, payload) {
+                this.props.setStatusTo(name, payload);
+            }
+
             render() {
-                const {name, statusRef, statusWrappedRef, status, ...rest} = this.props;
+                const {name, statusRef, wrappedRef, status, ...rest} = this.props;
                 if (!status) return null;
-                return <WrappedComponent {...rest} ref={statusWrappedRef} statusName={name} status={status} />;
+                return <WrappedComponent {...rest} ref={wrappedRef} statusName={name} status={status} />;
             }
         }
 
         const ConnectedStatus = hoistStatics(connector(ReduxStatus), WrappedComponent);
-        ConnectedStatus.defaultProps = config;
+        ConnectedStatus.defaultProps = {
+            name: undefined,
+            initialValues: {},
+            persist: true,
+            getStatusState: undefined,
+            statusRef: () => {},
+            wrappedRef: () => {},
+            ...options,
+        };
 
         return ConnectedStatus;
     };
