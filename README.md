@@ -213,7 +213,7 @@ Defaults to `{}`. Available properties:
     reducer under which a data will be stored. Each values must be an
     object with the following properties:
       - `promise` _(Function)_: A function that returns a promise.
-      - `args` _(Array)_: An array of arguments that will be passed to
+      - `[args]` _(Array)_: Arguments that will be passed to
       the `promise` function.
       - `[maxAge]` _(Number)_: See [`moize` documentation](https://github.com/planttheidea/moize#advanced-usage).
       - `[maxArgs]` _(Number)_: See [`moize` documentation](https://github.com/planttheidea/moize#advanced-usage).

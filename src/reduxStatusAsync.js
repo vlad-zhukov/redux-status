@@ -108,7 +108,7 @@ export default function reduxStatusAsync(options = {}) {
                     }
 
                     this.memoized
-                        [key](...value.args) // eslint-disable-line no-unexpected-multiline
+                        [key](...(value.args || {})) // eslint-disable-line no-unexpected-multiline
                         .then((result) => {
                             this.status.setStatus({
                                 [key]: promiseState.fulfilled(result),
