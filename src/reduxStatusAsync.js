@@ -38,7 +38,6 @@ export default function reduxStatusAsync(options = {}) {
             }
 
             componentWillUpdate(nextProps) {
-                this._extractValues(nextProps);
                 this._callPromises(nextProps);
             }
 
@@ -47,6 +46,10 @@ export default function reduxStatusAsync(options = {}) {
                 this.memoized = undefined;
                 this.initialValues = undefined;
             }
+
+            refresh = () => {
+                this._callPromises(this.props);
+            };
 
             _extractValues(props) {
                 if (type(props.values) !== 'function') {
@@ -77,7 +80,7 @@ export default function reduxStatusAsync(options = {}) {
 
                 if (type(value.promise) !== 'function') {
                     throw new TypeError(
-                        "ReduxStatus: argument 'values' must return an object of objects with property 'promise' " +
+                        "ReduxStatus: argument 'values' must return an object of objects with a property 'promise' " +
                             `each, but got: '${type(value.promise)}'.`
                     );
                 }
@@ -128,17 +131,24 @@ export default function reduxStatusAsync(options = {}) {
 
             render() {
                 const {values, ...rest} = this.props;
-                return <ReduxStatus {...rest} statusRef={this._getRef} initialValues={this.initialValues} />;
+                return (
+                    <ReduxStatus
+                        {...rest}
+                        statusRef={this._getRef}
+                        initialValues={this.initialValues}
+                        refresh={this.refresh}
+                    />
+                );
             }
         }
 
-        const HoistedStatus = hoistStatics(ReduxStatusAsync, ReduxStatus);
-        HoistedStatus.defaultProps = {
+        const HoistedStatusAsync = hoistStatics(ReduxStatusAsync, ReduxStatus);
+        HoistedStatusAsync.defaultProps = {
             name: undefined,
             values: () => ({}),
             ...options,
         };
 
-        return HoistedStatus;
+        return HoistedStatusAsync;
     };
 }

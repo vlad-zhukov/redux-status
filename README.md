@@ -261,6 +261,19 @@ class Async extends PureComponent {
 }
 ```
 
+__Passed props__
+
+All props from the `reduxStatus` and also:
+
+- `refresh()` _(Function)_
+
+__Instance methods__
+
+The following methods are exposed as component instance methods so they
+can be called from the outer component.
+
+- `refresh()`
+
 ---
 
 ### `reducer`
