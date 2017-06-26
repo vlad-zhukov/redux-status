@@ -4,7 +4,7 @@ import moize from 'moize';
 import hoistStatics from 'hoist-non-react-statics';
 import reduxStatus from './reduxStatus';
 import * as promiseState from './promiseState';
-import {getDisplayName} from './helpers';
+import {getDisplayName, type} from './helpers';
 
 export default function reduxStatusAsync(options = {}) {
     return (WrappedComponent) => {
@@ -49,17 +49,17 @@ export default function reduxStatusAsync(options = {}) {
             }
 
             _extractValues(props) {
-                if (props.values == null || typeof props.values !== 'function') {
+                if (type(props.values) !== 'function') {
                     throw new TypeError(
-                        `ReduxStatus: argument 'values' must be a function, but got: '${typeof props.values}'.`
+                        `ReduxStatus: argument 'values' must be a function, but got: '${type(props.values)}'.`
                     );
                 }
 
                 const values = props.values(props);
 
-                if (values == null || typeof values !== 'object') {
+                if (type(values) !== 'object') {
                     throw new TypeError(
-                        `ReduxStatus: argument 'values' must return an object, but got: '${typeof values}'.`
+                        `ReduxStatus: argument 'values' must return an object, but got: '${type(values)}'.`
                     );
                 }
 
@@ -69,16 +69,16 @@ export default function reduxStatusAsync(options = {}) {
             }
 
             _initValue(key, value) {
-                if (value == null || typeof value !== 'object') {
+                if (type(value) !== 'object') {
                     throw new TypeError(
-                        `ReduxStatus: argument 'values' must return an object of objects, but got: '${typeof value}'.`
+                        `ReduxStatus: argument 'values' must return an object of objects, but got: '${type(value)}'.`
                     );
                 }
 
-                if (value.promise == null || typeof value.promise !== 'function') {
+                if (type(value.promise) !== 'function') {
                     throw new TypeError(
                         "ReduxStatus: argument 'values' must return an object of objects with property 'promise' " +
-                            `each, but got: '${typeof value.promise}'.`
+                            `each, but got: '${type(value.promise)}'.`
                     );
                 }
 

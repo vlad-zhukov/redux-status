@@ -4,16 +4,16 @@ import {connect} from 'react-redux';
 import hoistStatics from 'hoist-non-react-statics';
 import * as actionCreators from './actionCreators';
 import {getStatusValue} from './selectors';
-import {getDisplayName} from './helpers';
+import {getDisplayName, type} from './helpers';
 
 export default function (options = {}) {
     return (WrappedComponent) => {
         const connector = connect(
             (state, props) => {
-                if (typeof props.name !== 'string') {
+                if (type(props.name) !== 'string') {
                     throw new TypeError(
                         "ReduxStatus: Argument 'name' is required and must be a 'string'," +
-                            `but got: '${typeof props.name}'.`
+                            `but got: '${type(props.name)}'.`
                     );
                 }
 
