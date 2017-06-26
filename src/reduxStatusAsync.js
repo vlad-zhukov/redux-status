@@ -28,7 +28,7 @@ export default function reduxStatusAsync(options = {}) {
                 const values = this._extractValues(props);
 
                 this.valueKeys.forEach((key) => {
-                    this._initValue(key, values[key]);
+                    this._setupValue(key, values[key]);
                     this.initialValues[key] = promiseState.pending();
                 });
             }
@@ -51,6 +51,14 @@ export default function reduxStatusAsync(options = {}) {
                 this._callPromises(this.props);
             };
 
+            setStatus(payload) {
+                this.status.setStatus(payload);
+            }
+
+            setStatusTo(name, payload) {
+                this.status.setStatusTo(name, payload);
+            }
+
             _extractValues(props) {
                 if (type(props.values) !== 'function') {
                     throw new TypeError(
@@ -71,7 +79,7 @@ export default function reduxStatusAsync(options = {}) {
                 return values;
             }
 
-            _initValue(key, value) {
+            _setupValue(key, value) {
                 if (type(value) !== 'object') {
                     throw new TypeError(
                         `ReduxStatus: argument 'values' must return an object of objects, but got: '${type(value)}'.`
@@ -99,13 +107,13 @@ export default function reduxStatusAsync(options = {}) {
                     const value = values[key];
 
                     if (this.memoized[key]) {
-                        this.status.setStatus(s => ({
+                        this.setStatus(s => ({
                             [key]: promiseState.refreshing(s[key]),
                         }));
                     }
                     else {
-                        this._initValue(key, value);
-                        this.status.setStatus({
+                        this._setupValue(key, value);
+                        this.setStatus({
                             [key]: promiseState.pending(),
                         });
                     }
@@ -113,12 +121,12 @@ export default function reduxStatusAsync(options = {}) {
                     this.memoized
                         [key](...(value.args || {})) // eslint-disable-line no-unexpected-multiline
                         .then((result) => {
-                            this.status.setStatus({
+                            this.setStatus({
                                 [key]: promiseState.fulfilled(result),
                             });
                         })
                         .catch((e) => {
-                            this.status.setStatus({
+                            this.setStatus({
                                 [key]: promiseState.rejected(e.message),
                             });
                         });

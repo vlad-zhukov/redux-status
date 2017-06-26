@@ -272,6 +272,8 @@ __Instance methods__
 The following methods are exposed as component instance methods so they
 can be called from the outer component.
 
+- `setStatus(nextStatus)`
+- `setStatusTo(statusName, nextStatus)`
 - `refresh()`
 
 ---
