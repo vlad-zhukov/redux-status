@@ -47,10 +47,6 @@ export default function reduxStatusAsync(options = {}) {
                 this.initialValues = undefined;
             }
 
-            refresh = () => {
-                this._callPromises(this.props);
-            };
-
             setStatus(payload) {
                 this.status.setStatus(payload);
             }
@@ -58,6 +54,10 @@ export default function reduxStatusAsync(options = {}) {
             setStatusTo(name, payload) {
                 this.status.setStatusTo(name, payload);
             }
+
+            refresh = () => {
+                this._callPromises(this.props);
+            };
 
             _extractValues(props) {
                 if (type(props.values) !== 'function') {
