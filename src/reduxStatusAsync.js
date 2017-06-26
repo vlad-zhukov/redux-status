@@ -16,6 +16,7 @@ export default function reduxStatusAsync(options = {}) {
             static propTypes = {
                 name: PropTypes.string.isRequired,
                 values: PropTypes.func.isRequired,
+                initialValues: PropTypes.object, // eslint-disable-line react/forbid-prop-types
             };
 
             constructor(props, context) {
@@ -23,7 +24,7 @@ export default function reduxStatusAsync(options = {}) {
 
                 this.valueKeys = null;
                 this.memoized = {};
-                this.initialValues = {};
+                this.initialValues = {...props.initialValues};
 
                 const values = this._extractValues(props);
 
@@ -138,7 +139,7 @@ export default function reduxStatusAsync(options = {}) {
             };
 
             render() {
-                const {values, ...rest} = this.props;
+                const {values, initialValues, ...rest} = this.props;
                 return (
                     <ReduxStatus
                         {...rest}
@@ -153,6 +154,7 @@ export default function reduxStatusAsync(options = {}) {
         const HoistedStatusAsync = hoistStatics(ReduxStatusAsync, ReduxStatus);
         HoistedStatusAsync.defaultProps = {
             name: undefined,
+            initialValues: {},
             values: () => ({}),
             ...options,
         };
