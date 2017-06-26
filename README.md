@@ -50,7 +50,7 @@ import React, {PureComponent} from 'react';
 import {reduxStatus} from 'redux-status';
 
 @reduxStatus({
-    name: 'CounterExample', // 'name' is a required property
+    name: 'Counter', // 'name' is required
     initialValues: {
         counter: 0,
     },
@@ -194,10 +194,10 @@ class CounterController extends PureComponent {
 
 ### `reduxStatusAsync([options])`
 
-A higher-order component decorator for handling async jobs (such as data fetching). It uses
-[`moize`](https://github.com/planttheidea/moize) for caching requests
-and [`reduxStatus()`](#reduxstatusoptions) for storing and updating the
-results.
+A higher-order component decorator for handling async jobs (such as data
+fetching). It uses [`moize`](https://github.com/planttheidea/moize)
+for caching requests and [`reduxStatus()`](#reduxstatusoptions)
+for storing and updating the results.
 
 __Arguments__
 
@@ -231,8 +231,8 @@ import React, {PureComponent} from 'react';
 import {reduxStatusAsync} from 'redux-status';
 
 @reduxStatusAsync({
-    name: 'AsyncExample', // 'name' is a required property
-    values: props => ({ // 'values' too
+    name: 'Async', // 'name' is required
+    values: props => ({ // 'values' is required too
         reddit: {
             args: [props.reddit],
             promise: reddit => fetch(`https://www.reddit.com/r/${reddit}.json`)
@@ -265,9 +265,12 @@ class Async extends PureComponent {
 
 ### `reducer`
 
-A status reducer that should be mounted to the Redux store under the `status` key.
+A status reducer that should be mounted to the Redux store under the
+`status` key.
 
-If you have to mount it to the key other than `status`, you may provide a `getStatusState()` function to the [`reduxStatus()`](#reduxstatusoptions) decorator.
+If you have to mount it to the key other than `status`, you may provide
+a `getStatusState()` function to the [`reduxStatus()`](#reduxstatusoptions)
+decorator.
 
 __Usage__
 
@@ -293,21 +296,30 @@ An object with Redux selectors.
 
 __Arguments__
 
-1. `statusName` _(String)_: The name of the status you are connecting to. Must be the same as the `name` you gave to [`reduxStatus()`](#reduxstatusoptions).
-2. `[getStatusState]` _(Function)_: A function that takes the entire Redux state and returns the state slice where the `redux-status` was mounted. Defaults to `state => state.status`.
+1. `statusName` _(String)_: The name of the status you are connecting to.
+Must be the same as the `name` you gave to [`reduxStatus()`](#reduxstatusoptions).
+2. `[getStatusState]` _(Function)_: A function that takes the entire
+Redux state and returns the state slice where the `redux-status`
+was mounted. Defaults to `state => state.status`.
 
 #### `getStatusMeta(statusName, [getStatusState])`
 
 __Arguments__
 
-1. `statusName` _(String)_: The name of the status you are connecting to. Must be the same as the `name` you gave to [`reduxStatus()`](#reduxstatusoptions).
-2. `[getStatusState]` _(Function)_: A function that takes the entire Redux state and returns the state slice where the `redux-status` was mounted. Defaults to `state => state.status`.
+1. `statusName` _(String)_: The name of the status you are connecting to.
+Must be the same as the `name` you gave to [`reduxStatus()`](#reduxstatusoptions).
+2. `[getStatusState]` _(Function)_: A function that takes the entire
+Redux state and returns the state slice where the `redux-status`
+was mounted. Defaults to `state => state.status`.
 
 ---
 
 ### `actions`
 
-An object with all internal action creators. This is an advanced API and most of the time shouldn't be used directly. It is recommended that you use the actions passed down to the wrapped component, as they are already bound to `dispatch()` and `statusName`.
+An object with all internal action creators. This is an advanced API
+and most of the time shouldn't be used directly. It is recommended that
+you use the actions passed down to the wrapped component,
+as they are already bound to `dispatch()` and `statusName`.
 
 #### `initialize(statusName, config)`
 
