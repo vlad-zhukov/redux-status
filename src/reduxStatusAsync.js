@@ -132,7 +132,7 @@ export default function reduxStatusAsync(options = {}) {
             }
         }
 
-        const HoistedStatus = hoistStatics(ReduxStatusAsync, WrappedComponent);
+        const HoistedStatus = hoistStatics(ReduxStatusAsync, ReduxStatus);
         HoistedStatus.defaultProps = {
             name: undefined,
             values: () => ({}),
