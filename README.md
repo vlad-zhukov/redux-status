@@ -1,6 +1,7 @@
 # redux-status · [![npm](https://img.shields.io/npm/v/redux-status.svg)](https://npm.im/redux-status)
 
-> A higher-order component decorator for painless state management with Redux and React.
+> Higher-order component decorators for painless state management with
+Redux and React.
 
 ## Table of Contents
 
@@ -18,13 +19,9 @@
 ## Install
 
 ```bash
-$ yarn add redux-status
-```
-
-or
-
-```bash
-$ npm install --save redux-status
+yarn add redux-status
+  # or
+npm install --save redux-status
 ```
 
 ## Usage
@@ -36,7 +33,7 @@ import {combineReducers, createStore} from 'redux';
 import {reducer as statusReducer} from 'redux-status';
 
 const reducers = combineReducers({
-    // 'status' is the default key 'reduxStatus' uses, you can
+    // 'status' is the default key 'reduxStatus' uses; you can
     // use another key but then you will also need to define
     // the 'getStatusState' option when initializing 'reduxStatus'
     status: statusReducer,
@@ -85,7 +82,9 @@ class Counter extends PureComponent {
 
 ## Examples
 
-Example apps can be found under the `examples/` directory. They are ported from the official [Redux repository](https://github.com/reactjs/redux/tree/master/examples), so you can compare both implementations.
+Example apps can be found under the `examples/` directory. They are
+ported from the official [Redux repository](https://github.com/reactjs/redux/tree/master/examples),
+so you can compare both implementations.
 
 - [Counter](https://github.com/Vlad-Zhukov/redux-status/tree/master/examples/counter)
 - [Async](https://github.com/Vlad-Zhukov/redux-status/tree/master/examples/async)
@@ -94,48 +93,136 @@ Example apps can be found under the `examples/` directory. They are ported from 
 
 ### `reduxStatus([options])`
 
+A higher-order component decorator that is connected to the Redux store
+using the `connect` function from the [`react-redux`](https://github.com/reactjs/react-redux).
+
 __Arguments__
 
-1. `[options]` _(Object)_: Arguments that will be merged with the default config. Setting `options` here is optional as React props can be used instead. Defaults to `{}`. Available properties:
-    - `[name]` _(String)_: A key where the state will be stored under the `status` reducer. It's an optional property in `options`, but a required one in general. If it wasn't set here, it must be set with React props.
-    - `[initialValues]` _(Object)_: Values which will be used during initialization, they can have any shape. Defaults to `{}`.
-    - `[persist]` _(Boolean)_: If `false`, the state related to that `name` will be removed when the last component using it unmounts. Defaults to `true`.
-    - `[getStatusState]` _(Function)_: A function that takes the entire Redux state and returns the state slice where the `redux-status` was mounted. Defaults to `state => state.status`.
+1. `[options]` _(Object)_: Arguments that will be used as `defaultProps`.
+Setting `options` here is optional as React props can be used instead.
+Defaults to `{}`. Available properties:
+    - `[name]` _(String)_: A key where the state will be stored under
+    the `status` reducer. It's an optional property in `options`,
+    but a required one in general. If it wasn't set here, it must
+    be set with React props.
+    - `[initialValues]` _(Object)_: Values which will be used during
+    initialization, they can have any shape. Defaults to `{}`.
+    - `[persist]` _(Boolean)_: If `false`, the state related to that
+    `name` will be removed when the last component using it unmounts.
+    Defaults to `true`.
+    - `[getStatusState]` _(Function)_: A function that takes the entire
+    Redux state and returns the state slice where the `redux-status`
+    was mounted. Defaults to `state => state.status`.
 
 __Returns__
 
-A function, that accepts a React component, and returns a higher-order React component that is connected to the Redux store using the `connect` function from the [`react-redux`](https://github.com/reactjs/react-redux).
+A function, that accepts a React component, and returns a higher-order
+React component.
 
-__Instance props__
+__Passed props__
 
-The following props will be passed down to the wrapped component.
+The following props will be passed down to the wrapped component:
 
 - `status` _(Object)_
-- `setStatus(nextStatus)` _(Function)_: If the `nextStatus` is a function, it takes a current status as an argument and must return an object that will be shallow merged with the current `status`. If the `nextStatus` is an object, it will be shallow merged directly.
-- `setStatusTo(statusName, nextStatus)` _(Function)_: Similar to `setStatus()` but also takes in a `statusName` as the first argument. Recommended for setting data to another statuses.
+- `setStatus(nextStatus)` _(Function)_: If the `nextStatus` is a
+function, it takes a current status as an argument and must return an
+object that will be shallow merged with the current `status`. If
+the `nextStatus` is an object, it will be shallow merged directly.
+- `setStatusTo(statusName, nextStatus)` _(Function)_: Similar
+to `setStatus()` but also takes in a `statusName` as the first argument.
+Recommended for setting data to another statuses.
 - `initialize(config)` _(Function)_
 - `destroy()` _(Function)_
 
-These props are the ones that have been used during initialization. They are not connected to the store for performance reasons, but it might be changed in the future if there will be a strong reason to do that.
+These props are the ones that have been used during initialization.
+They are not connected to the store for performance reasons, but it
+might be changed in the future if there will be a strong reason
+to do that.
 
 - `statusName` _(String)_
 - `initialValues` _(Object)_
 - `persist` _(Boolean)_
 - `[getStatusState(state)]` _(Function)_
 
+__Instance methods__
+
+The following methods are exposed as component instance methods so they
+can be called from the outer component.
+
+- `setStatus(nextStatus)`
+- `setStatusTo(statusName, nextStatus)`
+
+Based on the example above:
+```jsx
+const Counter = reduxStatus({
+    name: 'Counter',
+    initialValues: {
+        counter: 0,
+    },
+})(({status}) => <p>{status.counter}</p>);
+
+class CounterController extends PureComponent {
+    increment = () => {
+        this.counter.setStatus(prevStatus => ({
+            counter: prevStatus.counter + 1,
+        }));
+    }
+
+    decrement = () => {
+        this.counter.setStatus(prevStatus => ({
+            counter: prevStatus.counter - 1,
+        }));
+    }
+
+    _getRef = (ref) => {
+        this.counter = ref;
+    }
+
+    render() {
+        return (
+            <div>
+                <Counter statusRef={this._getRef} />
+                <button onClick={this.increment}>Increment</button>
+                <button onClick={this.decrement}>Decrement</button>
+            </div>
+        );
+    }
+}
+```
+
 ---
 
 ### `reduxStatusAsync([options])`
 
+A higher-order component decorator for handling async jobs (such as data fetching). It uses
+[`moize`](https://github.com/planttheidea/moize) for caching requests
+and [`reduxStatus()`](#reduxstatusoptions) for storing and updating the
+results.
+
 __Arguments__
 
-1. `[options]` _(Object)_: Arguments that will be merged with the default config. Setting `options` here is optional as React props can be used instead. Defaults to `{}`. Available properties:
-    - `[name]` _(String)_: A key where the stat1e will be stored under the `status` reducer. It's an optional property in `options`, but a required one in general. If it wasn't set here, it must be set with React props.
-    - `[values]` _(Function)_: A function that takes `props` and must return an object of objects.
+1. `[options]` _(Object)_: Arguments that will be used as `defaultProps`.
+Setting `options` here is optional as React props can be used instead.
+Defaults to `{}`. Available properties:
+    - `[name]` _(String)_: A key where the state will be stored under
+    the `status` reducer. It's an optional property in `options`,
+    but a required one in general. If it wasn't set here, it must be set
+    with React props.
+    - `[values]` _(Function)_: A function that takes `props` and must
+    return an object. Each key of that object refers the a place in the
+    reducer under which a data will be stored. Each values must be an
+    object with the following properties:
+      - `promise` _(Function)_: A function that returns a promise.
+      - `args` _(Array)_: An array of arguments that will be passed to
+      the `promise` function.
+      - `[maxAge]` _(Number)_: See [`moize` documentation](https://github.com/planttheidea/moize#advanced-usage).
+      - `[maxArgs]` _(Number)_: See [`moize` documentation](https://github.com/planttheidea/moize#advanced-usage).
+      - `[maxSize]` _(Number)_: See [`moize` documentation](https://github.com/planttheidea/moize#advanced-usage).
 
 __Returns__
 
-A function, that accepts a React component, and returns a higher-order React component. It uses [`reduxStatus()`](#reduxstatusoptions) under the hood.
+A function, that accepts a React component, and returns a higher-order
+React component.
 
 __Usage__
 
@@ -145,7 +232,7 @@ import {reduxStatusAsync} from 'redux-status';
 
 @reduxStatusAsync({
     name: 'AsyncExample', // 'name' is a required property
-    values: props => ({
+    values: props => ({ // 'values' too
         reddit: {
             args: [props.reddit],
             promise: reddit => fetch(`https://www.reddit.com/r/${reddit}.json`)
@@ -166,8 +253,7 @@ class Async extends PureComponent {
         return (
             <div style={{opacity: pending || refreshing ? 0.5 : 1}}>
                 <ul>
-                    {posts.map((post, i) =>
-                        <li key={i}>{post.data.title}</li>)}
+                    {posts.map((post, i) => <li key={i}>{post.data.title}</li>)}
                 </ul>
             </div>
         );
