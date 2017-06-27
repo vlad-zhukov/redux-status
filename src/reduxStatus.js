@@ -33,20 +33,21 @@ export default function (options = {}) {
         class ReduxStatus extends PureComponent {
             static displayName = `ReduxStatus(${getDisplayName(WrappedComponent)})`;
 
-            /* eslint-disable react/require-default-props */
+            /* eslint-disable react/require-default-props, react/forbid-prop-types */
             static propTypes = {
                 name: PropTypes.string.isRequired,
                 statusRef: PropTypes.func,
                 wrappedRef: PropTypes.func,
-                initialValues: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+                initialValues: PropTypes.object,
                 persist: PropTypes.bool,
                 getStatusState: PropTypes.func,
-                status: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+                status: PropTypes.object,
                 initialize: PropTypes.func,
                 destroy: PropTypes.func,
                 setStatus: PropTypes.func,
                 setStatusTo: PropTypes.func,
             };
+            /* eslint-enable */
 
             componentWillMount() {
                 this.props.statusRef(this);

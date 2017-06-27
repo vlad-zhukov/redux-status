@@ -13,11 +13,13 @@ export default function reduxStatusAsync(options = {}) {
         class ReduxStatusAsync extends PureComponent {
             static displayName = `ReduxStatusAsync(${getDisplayName(ReduxStatus)})`;
 
+            /* eslint-disable react/require-default-props, react/forbid-prop-types */
             static propTypes = {
                 name: PropTypes.string.isRequired,
                 values: PropTypes.func.isRequired,
-                initialValues: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+                initialValues: PropTypes.object,
             };
+            /* eslint-enable */
 
             constructor(props, context) {
                 super(props, context);
