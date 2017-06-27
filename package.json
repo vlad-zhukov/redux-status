@@ -19,8 +19,8 @@
     "prepublishOnly": "yarn run lint && yarn run build && yarn run test"
   },
   "dependencies": {
-    "hoist-non-react-statics": "^1.2.0",
-    "moize": "^2.3.3",
+    "hoist-non-react-statics": "^2.0.0",
+    "moize": "^2.4.0",
     "prop-types": "^15.5.10"
   },
   "devDependencies": {
@@ -33,7 +33,7 @@
     "eslint": "^3.19.0",
     "eslint-config-airbnb": "^15.0.1",
     "eslint-plugin-import": "^2.6.0",
-    "eslint-plugin-jsx-a11y": "^5.0.3",
+    "eslint-plugin-jsx-a11y": "5.1.0",
     "eslint-plugin-react": "^7.1.0",
     "jest": "^20.0.4",
     "prettier-eslint-cli": "^4.1.1",
