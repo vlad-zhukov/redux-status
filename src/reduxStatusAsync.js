@@ -59,7 +59,7 @@ export default function reduxStatusAsync(options = {}) {
             }
 
             refresh = () => {
-                this._callPromises(this.props);
+                this._callPromises(this.props, true);
             };
 
             _extractValues(props) {
@@ -104,35 +104,39 @@ export default function reduxStatusAsync(options = {}) {
                 });
             }
 
-            _callPromises(props) {
+            _callPromises(props, force = false) {
                 const values = this._extractValues(props);
                 this.valueKeys.forEach((key) => {
+                    const memoized = this.memoized[key];
+                    const isMemoized = !!memoized;
                     const value = values[key];
+                    const args = value.args || {};
 
-                    if (this.memoized[key]) {
-                        this.setStatus(s => ({
-                            [key]: promiseState.refreshing(s[key]),
-                        }));
-                    }
-                    else {
-                        this._setupValue(key, value);
-                        this.setStatus({
-                            [key]: promiseState.pending(),
-                        });
-                    }
+                    if (force || !isMemoized || !memoized.hasCacheFor(...args)) {
+                        if (isMemoized) {
+                            this.setStatus(s => ({
+                                [key]: promiseState.refreshing(s[key]),
+                            }));
+                        }
+                        else {
+                            this._setupValue(key, value);
+                            this.setStatus({
+                                [key]: promiseState.pending(),
+                            });
+                        }
 
-                    this.memoized
-                        [key](...(value.args || {})) // eslint-disable-line no-unexpected-multiline
-                        .then((result) => {
-                            this.setStatus({
-                                [key]: promiseState.fulfilled(result),
+                        memoized(...args)
+                            .then((result) => {
+                                this.setStatus({
+                                    [key]: promiseState.fulfilled(result),
+                                });
+                            })
+                            .catch((e) => {
+                                this.setStatus({
+                                    [key]: promiseState.rejected(e.message),
+                                });
                             });
-                        })
-                        .catch((e) => {
-                            this.setStatus({
-                                [key]: promiseState.rejected(e.message),
-                            });
-                        });
+                    }
                 });
             }
 

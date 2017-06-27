@@ -201,16 +201,11 @@ for storing and updating the results.
 
 __Arguments__
 
-1. `[options]` _(Object)_: Arguments that will be used as `defaultProps`.
-Setting `options` here is optional as React props can be used instead.
-Defaults to `{}`. Available properties:
-    - `[name]` _(String)_: A key where the state will be stored under
-    the `status` reducer. It's an optional property in `options`,
-    but a required one in general. If it wasn't set here, it must be set
-    with React props.
+1. `[options]` _(Object)_: See `reduxStatus` for a list of available
+arguments. The following arguments are specific to `reduxStatusAsync`:
     - `[values]` _(Function)_: A function that takes `props` and must
-    return an object. Each key of that object refers the a place in the
-    reducer under which a data will be stored. Each values must be an
+    return an object. Each key of that object refers to a place in the
+    reducer under which a data will be stored. Each value must be an
     object with the following properties:
       - `promise` _(Function)_: A function that returns a promise.
       - `[args]` _(Array)_: Arguments that will be passed to
@@ -265,7 +260,8 @@ __Passed props__
 
 All props from the `reduxStatus` and also:
 
-- `refresh()` _(Function)_
+- `refresh()` _(Function)_: Forces the update. Note that it will call
+the memoized function.
 
 __Instance methods__
 
