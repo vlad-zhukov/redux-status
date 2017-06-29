@@ -94,7 +94,7 @@ so you can compare both implementations.
 ### `reduxStatus([options])`
 
 A higher-order component decorator that is connected to the Redux store
-using the `connect` function from the [`react-redux`](https://github.com/reactjs/react-redux).
+using the `connect` function from [`react-redux`](https://github.com/reactjs/react-redux).
 
 __Arguments__
 
@@ -111,7 +111,7 @@ Defaults to `{}`. Available properties:
     `name` will be removed when the last component using it unmounts.
     Defaults to `true`.
     - `[getStatusState]` _(Function)_: A function that takes the entire
-    Redux state and returns the state slice where the `redux-status`
+    Redux state and returns the state slice where the [`reducer`](#reducer)
     was mounted. Defaults to `state => state.status`.
 
 __Returns__
@@ -123,7 +123,7 @@ __Passed props__
 
 The following props will be passed down to the wrapped component:
 
-- `status` _(Object)_
+- `status` _(Object)_: A slice of Redux store.
 - `setStatus(nextStatus)` _(Function)_: If the `nextStatus` is a
 function, it takes a current status as an argument and must return an
 object that will be shallow merged with the current `status`. If
@@ -194,22 +194,26 @@ class CounterController extends PureComponent {
 
 ### `reduxStatusAsync([options])`
 
-A higher-order component decorator for handling async jobs (such as data
-fetching). It uses [`moize`](https://github.com/planttheidea/moize)
+A higher-order component decorator for handling async jobs with promises
+(such as data fetching). It uses [`moize`](https://github.com/planttheidea/moize)
 for caching requests and [`reduxStatus()`](#reduxstatusoptions)
-for storing and updating the results.
+for storing and updating results.
 
 __Arguments__
 
-1. `[options]` _(Object)_: See `reduxStatus` for a list of available
-arguments. The following arguments are specific to `reduxStatusAsync`:
-    - `[values]` _(Function)_: A function that takes `props` and must
-    return an object. Each key of that object refers to a place in the
-    reducer under which a data will be stored. Each value must be an
-    object with the following properties:
-      - `promise` _(Function)_: A function that returns a promise.
+1. `[options]` _(Object)_: See [`reduxStatus()`](#reduxstatusoptions)
+for a list of available arguments. The following arguments are specific
+to `reduxStatusAsync` only:
+    - `[values]` _(Function)_: A function that takes React `props`
+    and must return an object. Each key of that object refers to a place
+    in the reducer under which a data will be stored. Each value must be
+    an object with the following properties:
+      - `promise` _(Function)_: A function that takes `args` as
+      arguments (if specified) and returns a promise. The result of that
+      promise will be memoized and stored in the Redux store.
       - `[args]` _(Array)_: Arguments that will be passed to
-      the `promise` function.
+      the `promise` function. They must be immutable (booleans, numbers
+      and strings) otherwise the meimozation will not work.
       - `[maxAge]` _(Number)_: See [`moize` documentation](https://github.com/planttheidea/moize#advanced-usage).
       - `[maxArgs]` _(Number)_: See [`moize` documentation](https://github.com/planttheidea/moize#advanced-usage).
       - `[maxSize]` _(Number)_: See [`moize` documentation](https://github.com/planttheidea/moize#advanced-usage).
@@ -228,7 +232,7 @@ import {reduxStatusAsync} from 'redux-status';
 @reduxStatusAsync({
     name: 'Async', // 'name' is required
     values: props => ({ // 'values' is required too
-        reddit: {
+        [props.reddit]: {
             args: [props.reddit],
             promise: reddit => fetch(`https://www.reddit.com/r/${reddit}.json`)
                 .then(res => res.json())
@@ -239,7 +243,7 @@ import {reduxStatusAsync} from 'redux-status';
 class Async extends PureComponent {
     render() {
         const {status, reddit} = this.props;
-        const {pending, refreshing, value} = status.reddit;
+        const {pending, refreshing, value} = status[reddit];
 
         if (!value) {
             return pending ? <h2>Loading...</h2> : <h2>Empty.</h2>;
@@ -279,7 +283,7 @@ can be called from the outer component.
 A status reducer that should be mounted to the Redux store under the
 `status` key.
 
-If you have to mount it to the key other than `status`, you may provide
+If you have to mount it to a key other than `status`, you may provide
 a `getStatusState()` function to the [`reduxStatus()`](#reduxstatusoptions)
 decorator.
 
