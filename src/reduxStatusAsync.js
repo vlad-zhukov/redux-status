@@ -51,11 +51,11 @@ export default function reduxStatusAsync(options = {}) {
             }
 
             setStatus(payload) {
-                this.status.setStatus(payload);
+                this.statusRef.setStatus(payload);
             }
 
             setStatusTo(name, payload) {
-                this.status.setStatusTo(name, payload);
+                this.statusRef.setStatusTo(name, payload);
             }
 
             refresh = () => {
@@ -141,7 +141,7 @@ export default function reduxStatusAsync(options = {}) {
             }
 
             _getRef = (ref) => {
-                this.status = ref;
+                this.statusRef = ref;
             };
 
             render() {
