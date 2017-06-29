@@ -100,7 +100,7 @@ export default function reduxStatusAsync(options = {}) {
                     isPromise: true,
                     maxAge: value.maxAge,
                     maxArgs: value.maxArgs,
-                    maxSize: value.maxSize || 5,
+                    maxSize: value.maxSize,
                 });
             }
 
