@@ -66,6 +66,10 @@ export default function (options = {}) {
                 this.props.setStatusTo(name, payload);
             }
 
+            get status() {
+                return this.props.status;
+            }
+
             render() {
                 const {name, statusRef, wrappedRef, status, ...rest} = this.props;
                 if (!status) return null;
