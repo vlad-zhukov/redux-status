@@ -1,4 +1,4 @@
-const {reduxStatus, reduxStatusAsync, reducer, selectors, actions, actionTypes} = require('../dist/redux-status.esm');
+const {reduxStatus, reduxStatusAsync, reducer, selectors, actions, actionTypes, propTypes} = require('../dist/redux-status.esm');
 
 describe('import-bundle-esm-as-cjs', () => {
     it('should export properly', () => {
@@ -8,5 +8,6 @@ describe('import-bundle-esm-as-cjs', () => {
         expect(typeof selectors).toBe('object');
         expect(typeof actions).toBe('object');
         expect(typeof actionTypes).toBe('object');
+        expect(typeof propTypes).toBe('object');
     });
 });

@@ -1,4 +1,4 @@
-import {reduxStatus, reduxStatusAsync, reducer, selectors, actions, actionTypes} from '../dist/redux-status.esm';
+import {reduxStatus, reduxStatusAsync, reducer, selectors, actions, actionTypes, propTypes} from '../dist/redux-status.esm';
 
 describe('import-bundle-esm', () => {
     it('should export properly', () => {
@@ -8,5 +8,6 @@ describe('import-bundle-esm', () => {
         expect(typeof selectors).toBe('object');
         expect(typeof actions).toBe('object');
         expect(typeof actionTypes).toBe('object');
+        expect(typeof propTypes).toBe('object');
     });
 });
