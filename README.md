@@ -15,6 +15,7 @@ Redux and React.
   - [`selectors`](#selectors)
   - [`actions`](#actions)
   - [`actionTypes`](#actiontypes)
+  - [`propTypes`](#proptypes)
 
 ## Install
 
@@ -366,5 +367,14 @@ An object with Redux action types.
 - `DESTROY` _(String)_
 - `UPDATE` _(String)_
 - `prefix` _(String)_
+
+---
+
+### `propTypes`
+
+An object with prop types.
+
+- `status` _(Object)_
+- `promiseState` _(Object)_
 
 ---
