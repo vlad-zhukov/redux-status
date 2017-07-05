@@ -1,4 +1,12 @@
-const {reduxStatus, reduxStatusAsync, reducer, selectors, actions, actionTypes, propTypes} = require('../dist/redux-status.esm');
+const {
+    reduxStatus,
+    reduxStatusAsync,
+    reducer,
+    selectors,
+    actions,
+    actionTypes,
+    propTypes,
+} = require('../dist/redux-status.esm');
 
 describe('import-bundle-esm-as-cjs', () => {
     it('should export properly', () => {

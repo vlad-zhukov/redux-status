@@ -1,4 +1,12 @@
-import {reduxStatus, reduxStatusAsync, reducer, selectors, actions, actionTypes, propTypes} from '../dist/redux-status.esm';
+import {
+    reduxStatus,
+    reduxStatusAsync,
+    reducer,
+    selectors,
+    actions,
+    actionTypes,
+    propTypes,
+} from '../dist/redux-status.esm';
 
 describe('import-bundle-esm', () => {
     it('should export properly', () => {
