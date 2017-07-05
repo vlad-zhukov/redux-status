@@ -1,6 +1,5 @@
 import React, {PureComponent} from 'react';
-import PropTypes from 'prop-types';
-import {reduxStatus} from 'redux-status';
+import {reduxStatus, propTypes} from 'redux-status';
 
 const connector = reduxStatus({
     name: 'Counter',
@@ -10,10 +9,7 @@ const connector = reduxStatus({
 });
 
 export class Counter extends PureComponent {
-    static propTypes = {
-        status: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
-        setStatus: PropTypes.func.isRequired,
-    };
+    static propTypes = propTypes.status;
 
     increment = () => {
         this.props.setStatus(s => ({value: s.value + 1}));
@@ -34,27 +30,13 @@ export class Counter extends PureComponent {
     };
 
     render() {
-        const {status} = this.props;
         return (
-            <p>
-                Clicked: {status.value} times
-                {' '}
-                <button onClick={this.increment}>
-                    +
-                </button>
-                {' '}
-                <button onClick={this.decrement}>
-                    -
-                </button>
-                {' '}
-                <button onClick={this.incrementIfOdd}>
-                    Increment if odd
-                </button>
-                {' '}
-                <button onClick={this.incrementAsync}>
-                    Increment async
-                </button>
-            </p>
+            <div>
+                Clicked: {this.props.status.value} times <button onClick={this.increment}>+</button>{' '}
+                <button onClick={this.decrement}>-</button>{' '}
+                <button onClick={this.incrementIfOdd}>Increment if odd</button>{' '}
+                <button onClick={this.incrementAsync}>Increment async</button>
+            </div>
         );
     }
 }
