@@ -125,7 +125,8 @@ export default function reduxStatusAsync(options = {}) {
                             });
                         }
 
-                        memoized(...args)
+                        this.memoized
+                            [key](...args) // eslint-disable-line no-unexpected-multiline
                             .then((result) => {
                                 this.setStatus({
                                     [key]: promiseState.fulfilled(result),
@@ -135,6 +136,7 @@ export default function reduxStatusAsync(options = {}) {
                                 this.setStatus({
                                     [key]: promiseState.rejected(e.message),
                                 });
+                                throw e;
                             });
                     }
                 });
