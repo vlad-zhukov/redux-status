@@ -6,7 +6,7 @@ import Posts from '../components/Posts';
 class Async extends PureComponent {
     static propTypes = {
         reddit: PropTypes.string.isRequired,
-        status: PropTypes.objectOf(propTypes.promiseState).isRequired,
+        status: PropTypes.objectOf(PropTypes.shape(propTypes.promiseState)).isRequired,
         refresh: PropTypes.func.isRequired,
     };
 

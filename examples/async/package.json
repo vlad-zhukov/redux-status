@@ -13,8 +13,7 @@
     "react-redux": "^5.0.5",
     "redux": "^3.7.1",
     "redux-logger": "^3.0.6",
-    "redux-status": "^0.6.0",
-    "redux-thunk": "^2.1.0"
+    "redux-status": "^0.6.0"
   },
   "devDependencies": {
     "react-scripts": "^1.0.10"
