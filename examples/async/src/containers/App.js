@@ -1,22 +1,72 @@
 import React, {Component} from 'react';
-import Async from './Async';
+import PropTypes from 'prop-types';
+import {reduxStatus, propTypes} from 'redux-status';
 import Picker from '../components/Picker';
+import Posts from '../components/Posts';
 
-export default class App extends Component {
-    state = {
-        reddit: 'reactjs',
+class App extends Component {
+    static propTypes = {
+        status: PropTypes.shape({
+            reddit: PropTypes.string,
+            reactjs: PropTypes.shape(propTypes.promiseState),
+            frontend: PropTypes.shape(propTypes.promiseState),
+        }).isRequired,
+        setStatus: PropTypes.func.isRequired,
+        refresh: PropTypes.func.isRequired,
     };
 
     handleChange = (nextReddit) => {
-        this.setState({reddit: nextReddit});
+        this.props.setStatus({reddit: nextReddit});
     };
 
+    renderPosts(isLoading, value) {
+        if (!value) {
+            return isLoading ? <h2>Loading...</h2> : <h2>Empty.</h2>;
+        }
+        return (
+            <div style={{opacity: isLoading ? 0.5 : 1}}>
+                <Posts posts={value} />
+            </div>
+        );
+    }
+
     render() {
+        const {status, refresh} = this.props;
+        const {pending, refreshing, value, lastUpdated} = status[status.reddit];
+        const isLoading = pending || refreshing;
+
         return (
             <div>
-                <Picker value={this.state.reddit} onChange={this.handleChange} options={['reactjs', 'frontend']} />
-                <Async reddit={this.state.reddit} />
+                <Picker
+                    value={this.props.status.reddit}
+                    onChange={this.handleChange}
+                    options={['reactjs', 'frontend']}
+                />
+                <p>
+                    {lastUpdated &&
+                    <span>
+                            Last updated at {new Date(lastUpdated).toLocaleTimeString()}.{' '}
+                        </span>}
+                    {!pending && !refreshing && <button onClick={refresh}>Refresh</button>}
+                </p>
+                {this.renderPosts(isLoading, value)}
             </div>
         );
     }
 }
+
+export default reduxStatus({
+    name: 'Async',
+    initialValues: {
+        reddit: 'reactjs',
+    },
+    asyncValues: props => ({
+        [props.status.reddit]: {
+            args: [props.status.reddit],
+            promise: reddit =>
+                fetch(`https://www.reddit.com/r/${reddit}.json`).then(res => res.json()).then(res => res.data.children),
+            maxAge: 10000,
+            maxArgs: 1,
+        },
+    }),
+})(App);
