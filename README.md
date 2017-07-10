@@ -149,9 +149,9 @@ to `setStatus()` but also takes in a `statusName` as the first argument.
 Recommended for setting data to another statuses.
 - `refresh()` _(Function)_: Forces the update of async values. Note that
 it will call the memoized function.
-- `initialize()` _(Function)_: The internal function that is be called
+- `initialize(props)` _(Function)_: The internal function that is called
 when the component mounts.
-- `destroy()` _(Function)_: The internal function that is be called
+- `destroy()` _(Function)_: The internal function that is called
 when the component unmounts.
 
 The following props are the ones that have been used during the
@@ -308,12 +308,12 @@ and most of the time shouldn't be used directly. It is recommended that
 you use the actions passed down to the wrapped component,
 as they are already bound to `dispatch()` and `statusName`.
 
-#### `initialize(statusName, config)`
+#### `initialize(statusName, props)`
 
 __Arguments__
 
 1. `statusName` _(String)_
-2. `config` _(Object)_: initial config.
+2. `props` _(Object)_: React props.
 
 #### `destroy(statusName)`
 

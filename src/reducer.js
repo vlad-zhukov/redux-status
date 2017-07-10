@@ -20,8 +20,7 @@ export default function reduxStatusReducer(state, {type, name, payload}) {
             }
             else {
                 const initialValues = {...payload.initialValues};
-                const fakeProps = {...payload, status: initialValues};
-                const asyncKeys = Object.keys(extractAsyncValues(fakeProps));
+                const asyncKeys = Object.keys(extractAsyncValues(payload));
 
                 for (let i = 0, l = asyncKeys.length; i < l; i++) {
                     initialValues[asyncKeys[i]] = promiseState.pending();

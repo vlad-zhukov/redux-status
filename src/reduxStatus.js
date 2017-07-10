@@ -91,7 +91,7 @@ export default function (options = {}) {
                 };
             },
             (dispatch, props) => ({
-                initialize: () => dispatch(actionCreators.initialize(props.name, props)),
+                initialize: payload => dispatch(actionCreators.initialize(props.name, payload)),
                 destroy: () => dispatch(actionCreators.destroy(props.name)),
                 setStatus: payload => dispatch(actionCreators.update(props.name, payload)),
                 setStatusTo: (name, payload) => dispatch(actionCreators.update(name, payload)),
@@ -120,9 +120,11 @@ export default function (options = {}) {
             /* eslint-enable */
 
             componentWillMount() {
+                const fakeProps = {...this.props, status: this.props.initialValues};
+
                 this.props.statusRef(this);
-                this.props.initialize();
-                callPromises(this.props, true);
+                this.props.initialize(fakeProps);
+                callPromises(fakeProps, true);
             }
 
             componentWillReceiveProps(nextProps) {
