@@ -19,7 +19,7 @@ class App extends Component {
         this.props.setStatus({reddit: nextReddit});
     };
 
-    renderPosts(isLoading, value) {
+    renderPosts = (isLoading, value) => {
         if (!value) {
             return isLoading ? <h2>Loading...</h2> : <h2>Empty.</h2>;
         }
@@ -28,7 +28,7 @@ class App extends Component {
                 <Posts posts={value} />
             </div>
         );
-    }
+    };
 
     render() {
         const {status, refresh} = this.props;
