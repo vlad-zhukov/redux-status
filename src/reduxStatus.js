@@ -1,13 +1,82 @@
 import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import moize from 'moize';
 import hoistStatics from 'hoist-non-react-statics';
 import * as actionCreators from './actionCreators';
 import {getStatusValue} from './selectors';
-import {getDisplayName, type} from './helpers';
+import * as promiseState from './promiseState';
+import {getDisplayName, type, extractAsyncValues} from './helpers';
 
 export default function (options = {}) {
     return (WrappedComponent) => {
+        const memoized = {};
+
+        function memoizeAsyncValue(key, value) {
+            if (type(value) !== 'object') {
+                throw new TypeError(
+                    `ReduxStatus: argument 'values' must return an object of objects, but got: '${type(value)}'.`
+                );
+            }
+
+            if (type(value.promise) !== 'function') {
+                throw new TypeError(
+                    "ReduxStatus: argument 'values' must return an object of objects with a property 'promise' " +
+                        `each, but got: '${type(value.promise)}'.`
+                );
+            }
+
+            memoized[key] = moize(value.promise, {
+                isPromise: true,
+                maxAge: value.maxAge,
+                maxArgs: value.maxArgs,
+                maxSize: value.maxSize,
+            });
+        }
+
+        function callPromises(props, isMounting = false, isForced = false) {
+            const asyncValues = extractAsyncValues(props);
+            const asyncKeys = Object.keys(asyncValues);
+            for (let i = 0, l = asyncKeys.length; i < l; i++) {
+                const key = asyncKeys[i];
+                const asyncValue = asyncValues[key];
+                const memo = memoized[key];
+                const isMemoized = !!memo;
+                const args = asyncValue.args || {};
+
+                if (isForced || isMemoized === false || memo.hasCacheFor(...args) === false) {
+                    if (isMemoized === true) {
+                        props.setStatus(s => ({
+                            [key]: promiseState.refreshing(s[key]),
+                        }));
+                    }
+                    else {
+                        memoizeAsyncValue(key, asyncValue);
+
+                        if (isMounting === false) {
+                            props.setStatus({
+                                [key]: promiseState.pending(),
+                            });
+                        }
+                    }
+
+                    memoized
+                        [key](...args) // eslint-disable-line no-unexpected-multiline
+                        .then((result) => {
+                            props.setStatus({
+                                [key]: promiseState.fulfilled(result),
+                            });
+                        })
+                        .catch((e) => {
+                            props.setStatus({
+                                [key]: promiseState.rejected(e.message),
+                            });
+                            throw e;
+                        });
+                }
+            }
+        }
+
         const connector = connect(
             (state, props) => {
                 if (type(props.name) !== 'string') {
@@ -39,6 +108,7 @@ export default function (options = {}) {
                 statusRef: PropTypes.func,
                 wrappedRef: PropTypes.func,
                 initialValues: PropTypes.object,
+                asyncValues: PropTypes.func,
                 persist: PropTypes.bool,
                 getStatusState: PropTypes.func,
                 status: PropTypes.object,
@@ -52,6 +122,28 @@ export default function (options = {}) {
             componentWillMount() {
                 this.props.statusRef(this);
                 this.props.initialize();
+                callPromises(this.props, true);
+            }
+
+            componentWillReceiveProps(nextProps) {
+                callPromises(nextProps);
+            }
+
+            shouldComponentUpdate(nextProps) {
+                if (!nextProps.status || nextProps.asyncKeys) return true;
+
+                const asyncValues = extractAsyncValues(nextProps);
+                const asyncKeys = Object.keys(asyncValues);
+                if (asyncKeys.length === 0) return true;
+
+                // If one of async values hasn't been added to the status yet, prevent the update
+                for (let i = 0, l = asyncKeys.length; i < l; i++) {
+                    if (nextProps.status[asyncKeys[i]] === undefined) {
+                        return false;
+                    }
+                }
+
+                return true;
             }
 
             componentWillUnmount() {
@@ -66,14 +158,26 @@ export default function (options = {}) {
                 this.props.setStatusTo(name, payload);
             }
 
+            refresh = () => {
+                callPromises(this.props, false, true);
+            };
+
             get status() {
                 return this.props.status;
             }
 
             render() {
-                const {name, statusRef, wrappedRef, status, ...rest} = this.props;
+                const {name, statusRef, wrappedRef, status, initialValues, asyncValues, ...rest} = this.props;
                 if (!status) return null;
-                return <WrappedComponent {...rest} ref={wrappedRef} statusName={name} status={status} />;
+                return (
+                    <WrappedComponent
+                        {...rest}
+                        ref={wrappedRef}
+                        statusName={name}
+                        status={status}
+                        refresh={this.refresh}
+                    />
+                );
             }
         }
 
@@ -81,6 +185,7 @@ export default function (options = {}) {
         ConnectedStatus.defaultProps = {
             name: undefined,
             initialValues: {},
+            asyncValues: null,
             persist: true,
             getStatusState: undefined,
             statusRef: () => {},

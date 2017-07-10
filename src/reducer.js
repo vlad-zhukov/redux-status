@@ -1,4 +1,6 @@
 import * as actionTypes from './actionTypes';
+import * as promiseState from './promiseState';
+import {extractAsyncValues} from './helpers';
 
 export default function reduxStatusReducer(state, {type, name, payload}) {
     if (!state) {
@@ -17,7 +19,15 @@ export default function reduxStatusReducer(state, {type, name, payload}) {
                 nextMeta[name] = {...nextMeta[name], count: (nextMeta[name].count += 1)};
             }
             else {
-                nextValues[name] = {...payload.initialValues};
+                const initialValues = {...payload.initialValues};
+                const fakeProps = {...payload, status: initialValues};
+                const asyncKeys = Object.keys(extractAsyncValues(fakeProps));
+
+                for (let i = 0, l = asyncKeys.length; i < l; i++) {
+                    initialValues[asyncKeys[i]] = promiseState.pending();
+                }
+
+                nextValues[name] = initialValues;
                 nextMeta[name] = {
                     name: payload.name,
                     initialValues: payload.initialValues,

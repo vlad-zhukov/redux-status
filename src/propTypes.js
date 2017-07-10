@@ -13,7 +13,6 @@ export const status = {
 
     /* Initial config */
     statusName: string.isRequired,
-    initialValues: object.isRequired,
     persist: bool.isRequired,
     getStatusState: func,
 };

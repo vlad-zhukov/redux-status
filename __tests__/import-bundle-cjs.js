@@ -1,17 +1,8 @@
-const {
-    reduxStatus,
-    reduxStatusAsync,
-    reducer,
-    selectors,
-    actions,
-    actionTypes,
-    propTypes,
-} = require('../dist/redux-status.cjs');
+const {reduxStatus, reducer, selectors, actions, actionTypes, propTypes} = require('../dist/redux-status.cjs');
 
 describe('import-bundle-cjs', () => {
     it('should export properly', () => {
         expect(typeof reduxStatus).toBe('function');
-        expect(typeof reduxStatusAsync).toBe('function');
         expect(typeof reducer).toBe('function');
         expect(typeof selectors).toBe('object');
         expect(typeof actions).toBe('object');

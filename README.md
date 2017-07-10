@@ -1,6 +1,6 @@
 # redux-status · [![npm](https://img.shields.io/npm/v/redux-status.svg)](https://npm.im/redux-status)
 
-> Higher-order component decorators for painless state management with
+> A higher-order component decorator for painless state management with
 Redux and React.
 
 ## Table of Contents
@@ -10,7 +10,6 @@ Redux and React.
 - [Examples](#examples)
 - [API](#api)
   - [`reduxStatus(options)`](#reduxstatusoptions)
-  - [`reduxStatusAsync(options)`](#reduxstatusasyncoptions)
   - [`reducer`](#reducer)
   - [`selectors`](#selectors)
   - [`actions`](#actions)
@@ -96,6 +95,9 @@ so you can compare both implementations.
 
 A higher-order component decorator that is connected to the Redux store
 using the `connect` function from [`react-redux`](https://github.com/reactjs/react-redux).
+It can store plain data as well as handle async jobs with promises
+(such as data fetching). It uses [`moize`](https://github.com/planttheidea/moize)
+for caching results of promises.
 
 __Arguments__
 
@@ -108,6 +110,19 @@ Defaults to `{}`. Available properties:
     be set with React props.
     - `[initialValues]` _(Object)_: Values which will be used during
     initialization, they can have any shape. Defaults to `{}`.
+    - `[asyncValues]` _(Function)_: A function that takes React `props`
+    and must return an object. Each key of that object refers to a place
+    in the reducer under which a data will be stored. Each value must be
+    an object with the following properties.
+      - `promise` _(Function)_: A function that takes `args` as
+      arguments (if specified) and returns a promise. The result of that
+      promise will be memoized and stored in the Redux store.
+      - `[args]` _(Array)_: Arguments that will be passed to
+      the `promise` function. They must be immutable (booleans, numbers
+      and strings) otherwise the meimozation will not work.
+      - `[maxAge]` _(Number)_: See [`moize` documentation](https://github.com/planttheidea/moize#advanced-usage).
+      - `[maxArgs]` _(Number)_: See [`moize` documentation](https://github.com/planttheidea/moize#advanced-usage).
+      - `[maxSize]` _(Number)_: See [`moize` documentation](https://github.com/planttheidea/moize#advanced-usage).
     - `[persist]` _(Boolean)_: If `false`, the state related to that
     `name` will be removed when the last component using it unmounts.
     Defaults to `true`.
@@ -132,28 +147,33 @@ the `nextStatus` is an object, it will be shallow merged directly.
 - `setStatusTo(statusName, nextStatus)` _(Function)_: Similar
 to `setStatus()` but also takes in a `statusName` as the first argument.
 Recommended for setting data to another statuses.
-- `initialize(config)` _(Function)_
-- `destroy()` _(Function)_
+- `refresh()` _(Function)_: Forces the update of async values. Note that
+it will call the memoized function.
+- `initialize()` _(Function)_: The internal function that is be called
+when the component mounts.
+- `destroy()` _(Function)_: The internal function that is be called
+when the component unmounts.
 
-These props are the ones that have been used during initialization.
-They are not connected to the store for performance reasons, but it
-might be changed in the future if there will be a strong reason
-to do that.
+The following props are the ones that have been used during the
+initialization. They are not connected to the store for performance
+reasons, but it might be changed in the future if there will be
+a strong reason to do that.
 
 - `statusName` _(String)_
-- `initialValues` _(Object)_
 - `persist` _(Boolean)_
 - `[getStatusState(state)]` _(Function)_
 
-__Instance methods__
+__Instance properties__
 
-The following methods are exposed as component instance methods so they
-can be called from the outer component.
+The following properties are public so they can be called from the
+outside.
 
+- `status` _(getter)_
 - `setStatus(nextStatus)`
 - `setStatusTo(statusName, nextStatus)`
+- `refresh()`
 
-Based on the example above:
+An example that utilizes instance methods based on the example above:
 ```jsx
 const Counter = reduxStatus({
     name: 'Counter',
@@ -191,40 +211,7 @@ class CounterController extends PureComponent {
 }
 ```
 
----
-
-### `reduxStatusAsync([options])`
-
-A higher-order component decorator for handling async jobs with promises
-(such as data fetching). It uses [`moize`](https://github.com/planttheidea/moize)
-for caching requests and [`reduxStatus()`](#reduxstatusoptions)
-for storing and updating results.
-
-__Arguments__
-
-1. `[options]` _(Object)_: See [`reduxStatus()`](#reduxstatusoptions)
-for a list of available arguments. The following arguments are specific
-to `reduxStatusAsync` only:
-    - `[values]` _(Function)_: A function that takes React `props`
-    and must return an object. Each key of that object refers to a place
-    in the reducer under which a data will be stored. Each value must be
-    an object with the following properties:
-      - `promise` _(Function)_: A function that takes `args` as
-      arguments (if specified) and returns a promise. The result of that
-      promise will be memoized and stored in the Redux store.
-      - `[args]` _(Array)_: Arguments that will be passed to
-      the `promise` function. They must be immutable (booleans, numbers
-      and strings) otherwise the meimozation will not work.
-      - `[maxAge]` _(Number)_: See [`moize` documentation](https://github.com/planttheidea/moize#advanced-usage).
-      - `[maxArgs]` _(Number)_: See [`moize` documentation](https://github.com/planttheidea/moize#advanced-usage).
-      - `[maxSize]` _(Number)_: See [`moize` documentation](https://github.com/planttheidea/moize#advanced-usage).
-
-__Returns__
-
-A function, that accepts a React component, and returns a higher-order
-React component.
-
-__Usage__
+__Async usage__
 
 ```jsx
 import React, {PureComponent} from 'react';
@@ -260,22 +247,6 @@ class Async extends PureComponent {
     }
 }
 ```
-
-__Passed props__
-
-All props from the `reduxStatus` and also:
-
-- `refresh()` _(Function)_: Forces the update. Note that it will call
-the memoized function.
-
-__Instance methods__
-
-The following methods are exposed as component instance methods so they
-can be called from the outer component.
-
-- `setStatus(nextStatus)`
-- `setStatusTo(statusName, nextStatus)`
-- `refresh()`
 
 ---
 
