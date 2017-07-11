@@ -7,6 +7,7 @@ export const status = {
     status: object.isRequired,
     setStatus: func.isRequired,
     setStatusTo: func.isRequired,
+    refresh: func.isRequired,
     initialize: func.isRequired,
     destroy: func.isRequired,
     dispatch: func.isRequired,
