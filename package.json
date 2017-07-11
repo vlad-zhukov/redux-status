@@ -41,7 +41,7 @@
     "react-redux": "^5.0.5",
     "redux": "^3.7.1",
     "rimraf": "^2.6.1",
-    "rollup": "^0.45.0",
+    "rollup": "^0.45.1",
     "rollup-plugin-babel": "^2.7.1"
   },
   "peerDependencies": {
