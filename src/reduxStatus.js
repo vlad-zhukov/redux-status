@@ -1,4 +1,4 @@
-import React, {PureComponent} from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import moize from 'moize';
@@ -99,7 +99,7 @@ export default function (options = {}) {
             })
         );
 
-        class ReduxStatus extends PureComponent {
+        class ReduxStatus extends Component {
             static displayName = `ReduxStatus(${getDisplayName(WrappedComponent)})`;
 
             /* eslint-disable react/require-default-props, react/forbid-prop-types */
