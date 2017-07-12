@@ -71,7 +71,6 @@ export default function (options = {}) {
                             props.setStatus({
                                 [key]: promiseState.rejected(e.message),
                             });
-                            throw e;
                         });
                 }
             }
