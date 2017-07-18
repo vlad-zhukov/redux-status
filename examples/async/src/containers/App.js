@@ -33,17 +33,16 @@ class App extends Component {
                 />
                 <p>
                     {lastUpdated &&
-                    <span>
+                        <span>
                             Last updated at {new Date(lastUpdated).toLocaleTimeString()}.{' '}
                         </span>}
                     {!isFetching && <button onClick={refresh}>Refresh</button>}
                 </p>
-                {!value
-                    ? (isFetching ? <h2>Loading...</h2> : <h2>Empty.</h2>)
+                {!value // eslint-disable-line no-nested-ternary
+                    ? isFetching ? <h2>Loading...</h2> : <h2>Empty.</h2>
                     : <div style={{opacity: isFetching ? 0.5 : 1}}>
                         <Posts posts={value} />
-                    </div>
-                }
+                    </div>}
             </div>
         );
     }
