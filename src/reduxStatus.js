@@ -8,7 +8,7 @@ import {getStatusValue} from './selectors';
 import * as promiseState from './promiseState';
 import {getDisplayName, type, extractAsyncValues} from './helpers';
 
-export default function (options = {}) {
+export default function reduxStatus(options = {}) {
     return (WrappedComponent) => {
         const memoized = {};
 
@@ -44,7 +44,7 @@ export default function (options = {}) {
                 const isMemoized = !!memo;
                 const args = asyncValue.args || {};
 
-                if (isForced || isMemoized === false || memo.hasCacheFor(...args) === false) {
+                if (isForced || isMemoized === false || memo.has(args) === false) {
                     if (isMemoized === true) {
                         props.setStatus(s => ({
                             [key]: promiseState.refreshing(s[key]),

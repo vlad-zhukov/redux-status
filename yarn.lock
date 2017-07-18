@@ -2643,9 +2643,9 @@ mkdirp@^0.5.0, mkdirp@^0.5.1:
   dependencies:
     minimist "0.0.8"
 
-moize@^2.5.1:
-  version "2.5.1"
-  resolved "https://registry.yarnpkg.com/moize/-/moize-2.5.1.tgz#eb5a881c7d68c7fb6f9dfdd8d411201daae8e430"
+moize@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/moize/-/moize-3.0.1.tgz#3e39c27a7167b4b16c6eac5ef7b43d6a1f2246a8"
 
 ms@2.0.0:
   version "2.0.0"
