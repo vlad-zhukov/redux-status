@@ -39,6 +39,12 @@ export default function reduxStatus(options = {}) {
             const asyncKeys = Object.keys(asyncValues);
             for (let i = 0, l = asyncKeys.length; i < l; i++) {
                 const key = asyncKeys[i];
+
+                // Do not recall rejected (uncached) promises
+                if (props.status && props.status[key] && props.status[key].rejected) {
+                    break;
+                }
+
                 const asyncValue = asyncValues[key];
                 const memo = memoized[key];
                 const isMemoized = !!memo;
