@@ -19,21 +19,11 @@ class App extends Component {
         this.props.setStatus({reddit: nextReddit});
     };
 
-    renderPosts = (isLoading, value) => {
-        if (!value) {
-            return isLoading ? <h2>Loading...</h2> : <h2>Empty.</h2>;
-        }
-        return (
-            <div style={{opacity: isLoading ? 0.5 : 1}}>
-                <Posts posts={value} />
-            </div>
-        );
-    };
-
     render() {
         const {status, refresh} = this.props;
         const {pending, refreshing, value, lastUpdated} = status[status.reddit];
-        const isLoading = pending || refreshing;
+        const isFetching = pending || refreshing;
+        const isEmpty = value.length === 0;
 
         return (
             <div>
@@ -47,9 +37,14 @@ class App extends Component {
                     <span>
                             Last updated at {new Date(lastUpdated).toLocaleTimeString()}.{' '}
                         </span>}
-                    {!pending && !refreshing && <button onClick={refresh}>Refresh</button>}
+                    {!isFetching && <button onClick={refresh}>Refresh</button>}
                 </p>
-                {this.renderPosts(isLoading, value)}
+                {isEmpty
+                    ? (isFetching ? <h2>Loading...</h2> : <h2>Empty.</h2>)
+                    : <div style={{opacity: isFetching ? 0.5 : 1}}>
+                        <Posts posts={value} />
+                    </div>
+                }
             </div>
         );
     }
