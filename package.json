@@ -19,8 +19,8 @@
     "prepublishOnly": "yarn run lint && yarn run build && yarn run test"
   },
   "dependencies": {
-    "hoist-non-react-statics": "^2.2.0",
-    "moize": "^3.0.1",
+    "hoist-non-react-statics": "^2.2.1",
+    "moize": "^3.3.0",
     "prop-types": "^15.5.10"
   },
   "devDependencies": {
