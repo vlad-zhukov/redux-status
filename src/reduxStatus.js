@@ -42,15 +42,15 @@ export default function reduxStatus(options = {}) {
 
                 // Do not recall rejected (uncached) promises unless forced
                 if (!isForced && props.status && props.status[key] && props.status[key].rejected) {
-                    break;
+                    continue;
                 }
 
                 const asyncValue = asyncValues[key];
                 const memo = memoized[key];
                 const isMemoized = !!memo;
-                const args = asyncValue.args || {};
+                const args = asyncValue.args || [];
 
-                if (isForced || isMemoized === false || memo.has(args) === false) {
+                if (isForced || isMounting || isMemoized === false || memo.has(args) === false) {
                     if (isMemoized === true) {
                         props.setStatus(s => ({
                             [key]: promiseState.refreshing(s[key]),
