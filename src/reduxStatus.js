@@ -34,51 +34,56 @@ export default function reduxStatus(options = {}) {
             });
         }
 
+        function callPromise(props, key, asyncValue, isMounting, isForced) {
+            // Do not recall rejected (uncached) promises unless forced
+            if (!isForced && props.status && props.status[key] && props.status[key].rejected) {
+                return;
+            }
+
+            const moized = memoized[key];
+            const args = asyncValue.args || [];
+
+            if (!isForced && !isMounting && moized && moized.has(args)) {
+                return;
+            }
+
+            if (moized) {
+                props.setStatus(s => ({
+                    [key]: promiseState.refreshing(s[key]),
+                }));
+            }
+            else {
+                memoizeAsyncValue(key, asyncValue);
+
+                if (isMounting === false) {
+                    props.setStatus({
+                        [key]: promiseState.pending(),
+                    });
+                }
+            }
+
+            memoized
+                [key](...args) // eslint-disable-line no-unexpected-multiline
+                .then((result) => {
+                    props.setStatus({
+                        [key]: promiseState.fulfilled(result),
+                    });
+                })
+                .catch((e) => {
+                    props.setStatus({
+                        [key]: promiseState.rejected(e.message),
+                    });
+                });
+        }
+
         function callPromises(props, isMounting = false, isForced = false) {
             const asyncValues = extractAsyncValues(props);
             const asyncKeys = Object.keys(asyncValues);
             for (let i = 0, l = asyncKeys.length; i < l; i++) {
                 const key = asyncKeys[i];
-
-                // Do not recall rejected (uncached) promises unless forced
-                if (!isForced && props.status && props.status[key] && props.status[key].rejected) {
-                    continue;
-                }
-
                 const asyncValue = asyncValues[key];
-                const memo = memoized[key];
-                const isMemoized = !!memo;
-                const args = asyncValue.args || [];
 
-                if (isForced || isMounting || isMemoized === false || memo.has(args) === false) {
-                    if (isMemoized === true) {
-                        props.setStatus(s => ({
-                            [key]: promiseState.refreshing(s[key]),
-                        }));
-                    }
-                    else {
-                        memoizeAsyncValue(key, asyncValue);
-
-                        if (isMounting === false) {
-                            props.setStatus({
-                                [key]: promiseState.pending(),
-                            });
-                        }
-                    }
-
-                    memoized
-                        [key](...args) // eslint-disable-line no-unexpected-multiline
-                        .then((result) => {
-                            props.setStatus({
-                                [key]: promiseState.fulfilled(result),
-                            });
-                        })
-                        .catch((e) => {
-                            props.setStatus({
-                                [key]: promiseState.rejected(e.message),
-                            });
-                        });
-                }
+                callPromise(props, key, asyncValue, isMounting, isForced);
             }
         }
 
