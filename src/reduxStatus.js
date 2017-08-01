@@ -36,18 +36,23 @@ export default function reduxStatus(options = {}) {
 
         function callPromise(props, key, asyncValue, isMounting, isForced) {
             // Do not recall rejected (uncached) promises unless forced
-            if (!isForced && props.status && props.status[key] && props.status[key].rejected) {
+            if (
+                isForced === false &&
+                props.status !== undefined &&
+                props.status[key] !== undefined &&
+                props.status[key].rejected === true
+            ) {
                 return;
             }
 
             const moized = memoized[key];
-            const args = asyncValue.args || [];
+            const args = type(asyncValue.args) === 'array' ? asyncValue.args : [];
 
-            if (!isForced && !isMounting && moized && moized.has(args)) {
+            if (isForced === false && isMounting === false && moized !== undefined && moized.has(args) === true) {
                 return;
             }
 
-            if (moized) {
+            if (moized !== undefined) {
                 props.setStatus(s => ({
                     [key]: promiseState.refreshing(s[key]),
                 }));
@@ -142,7 +147,7 @@ export default function reduxStatus(options = {}) {
             }
 
             shouldComponentUpdate(nextProps) {
-                if (!nextProps.status || nextProps.asyncKeys) return true;
+                if (nextProps.status === undefined || nextProps.asyncValues === undefined) return true;
 
                 const asyncValues = extractAsyncValues(nextProps);
                 const asyncKeys = Object.keys(asyncValues);
@@ -180,7 +185,7 @@ export default function reduxStatus(options = {}) {
 
             render() {
                 const {name, statusRef, wrappedRef, status, initialValues, asyncValues, ...rest} = this.props;
-                if (!status) return null;
+                if (status === undefined) return null;
                 return (
                     <WrappedComponent
                         {...rest}
@@ -197,7 +202,7 @@ export default function reduxStatus(options = {}) {
         ConnectedStatus.defaultProps = {
             name: undefined,
             initialValues: {},
-            asyncValues: null,
+            asyncValues: undefined,
             persist: true,
             getStatusState: undefined,
             statusRef: () => {},

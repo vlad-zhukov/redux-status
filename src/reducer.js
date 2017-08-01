@@ -15,7 +15,7 @@ export default function reduxStatusReducer(state, {type, name, payload}) {
             const nextValues = {...state.values};
             const nextMeta = {...state.meta};
 
-            if (nextValues[name] && nextMeta[name]) {
+            if (nextValues[name] !== undefined && nextMeta[name] !== undefined) {
                 nextMeta[name] = {...nextMeta[name], count: (nextMeta[name].count += 1)};
             }
             else {
@@ -45,7 +45,12 @@ export default function reduxStatusReducer(state, {type, name, payload}) {
             const nextValues = {...state.values};
             const nextMeta = {...state.meta};
 
-            if (nextValues[name] && nextMeta[name] && nextMeta[name].count > 0 && nextMeta[name].persist) {
+            if (
+                nextValues[name] !== undefined &&
+                nextMeta[name] !== undefined &&
+                nextMeta[name].count > 0 &&
+                nextMeta[name].persist === true
+            ) {
                 nextMeta[name].count -= 1;
             }
             else {
