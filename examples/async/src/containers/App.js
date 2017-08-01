@@ -15,9 +15,13 @@ class App extends Component {
         refresh: PropTypes.func.isRequired,
     };
 
-    handleChange = (nextReddit) => {
-        this.props.setStatus({reddit: nextReddit});
-    };
+    constructor(props, context) {
+        super(props, context);
+
+        this.handleChange = (nextReddit) => {
+            this.props.setStatus({reddit: nextReddit});
+        };
+    }
 
     render() {
         const {status, refresh} = this.props;

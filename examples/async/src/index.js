@@ -12,7 +12,7 @@ const reducer = combineReducers({
 
 const middleware = [];
 if (process.env.NODE_ENV !== 'production') {
-    middleware.push(createLogger());
+    middleware.push(createLogger({collapsed: true, duration: true}));
 }
 
 const store = createStore(reducer, applyMiddleware(...middleware));

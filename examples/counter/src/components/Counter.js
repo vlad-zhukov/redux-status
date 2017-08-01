@@ -11,23 +11,27 @@ const connector = reduxStatus({
 export class Counter extends PureComponent {
     static propTypes = propTypes.status;
 
-    increment = () => {
-        this.props.setStatus(s => ({value: s.value + 1}));
-    };
+    constructor(props, context) {
+        super(props, context);
 
-    decrement = () => {
-        this.props.setStatus(s => ({value: s.value - 1}));
-    };
+        this.increment = () => {
+            this.props.setStatus(s => ({value: s.value + 1}));
+        };
 
-    incrementIfOdd = () => {
-        if (this.props.status.value % 2 !== 0) {
-            this.increment();
-        }
-    };
+        this.decrement = () => {
+            this.props.setStatus(s => ({value: s.value - 1}));
+        };
 
-    incrementAsync = () => {
-        setTimeout(() => this.increment(), 1000);
-    };
+        this.incrementIfOdd = () => {
+            if (this.props.status.value % 2 !== 0) {
+                this.increment();
+            }
+        };
+
+        this.incrementAsync = () => {
+            setTimeout(() => this.increment(), 1000);
+        };
+    }
 
     render() {
         return (
