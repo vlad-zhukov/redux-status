@@ -36,7 +36,7 @@ export class Counter extends PureComponent {
     render() {
         return (
             <div>
-                Clicked: {this.props.status.value} times <button onClick={this.increment}>+</button>{' '}
+                <span>Clicked: {this.props.status.value} times</span> <button onClick={this.increment}>+</button>{' '}
                 <button onClick={this.decrement}>-</button>{' '}
                 <button onClick={this.incrementIfOdd}>Increment if odd</button>{' '}
                 <button onClick={this.incrementAsync}>Increment async</button>

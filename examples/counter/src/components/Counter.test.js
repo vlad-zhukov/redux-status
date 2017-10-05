@@ -1,26 +1,29 @@
 import React from 'react';
-import {shallow} from 'enzyme';
+import Enzyme from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16'
 import {Counter} from './Counter';
+
+Enzyme.configure({adapter: new Adapter()});
 
 function setup(value = 0) {
     const props = {
         status: {value},
         setStatus: jest.fn(),
     };
-    const component = shallow(<Counter {...props} />);
+    const component = Enzyme.shallow(<Counter {...props} />);
 
     return {
         component,
         props,
         buttons: component.find('button'),
-        p: component.find('p'),
+        span: component.find('span'),
     };
 }
 
 describe('Counter component', () => {
     it('should display count', () => {
-        const {p} = setup();
-        expect(p.text()).toMatch(/^Clicked: 0 times/);
+        const {span} = setup();
+        expect(span.text()).toMatch(/^Clicked: 0 times/);
     });
 
     it('first button should call setStatus', () => {
