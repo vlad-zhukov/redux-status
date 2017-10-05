@@ -101,7 +101,7 @@ for caching results of promises.
 
 __Arguments__
 
-1. `[options]` _(Object)_: Arguments that will be used as `defaultProps`.
+1. `[options]` _(Object)_: Settings that will be used as `defaultProps`.
 Setting `options` here is optional as React props can be used instead.
 Defaults to `{}`. Available properties:
     - `[name]` _(String)_: A key where the state will be stored under
@@ -126,6 +126,10 @@ Defaults to `{}`. Available properties:
     - `[persist]` _(Boolean)_: If `false`, the state related to that
     `name` will be removed when the last component using it unmounts.
     Defaults to `true`.
+    - `[autoRefresh]` _(Boolean)_: An option that defines should async
+    functions be called or not, including initial mounting. Setting it
+    to `false` allows manual refresh handling using the `refresh`
+    method. Defaults to `true`.
     - `[getStatusState]` _(Function)_: A function that takes the entire
     Redux state and returns the state slice where the [`reducer`](#reducer)
     was mounted. Defaults to `state => state.status`.

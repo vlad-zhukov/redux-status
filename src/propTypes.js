@@ -15,6 +15,7 @@ export const status = {
     /* Initial config */
     statusName: string.isRequired,
     persist: bool.isRequired,
+    autoRefresh: bool.isRequired,
     getStatusState: func,
 };
 

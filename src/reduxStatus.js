@@ -81,6 +81,11 @@ export default function reduxStatus(options = {}) {
         }
 
         function callPromises(props, isMounting = false, isForced = false) {
+            // Stop auto-refreshing
+            if (props.autoRefresh === false && isForced === false) {
+                return;
+            }
+
             const asyncValues = extractAsyncValues(props);
             const asyncKeys = Object.keys(asyncValues);
             for (let i = 0, l = asyncKeys.length; i < l; i++) {
@@ -124,6 +129,7 @@ export default function reduxStatus(options = {}) {
                 initialValues: PropTypes.object,
                 asyncValues: PropTypes.func,
                 persist: PropTypes.bool,
+                autoRefresh: PropTypes.bool,
                 getStatusState: PropTypes.func,
                 status: PropTypes.object,
                 initialize: PropTypes.func,
@@ -203,6 +209,7 @@ export default function reduxStatus(options = {}) {
             initialValues: {},
             asyncValues: undefined,
             persist: true,
+            autoRefresh: true,
             getStatusState: undefined,
             statusRef: () => {},
             wrappedRef: () => {},

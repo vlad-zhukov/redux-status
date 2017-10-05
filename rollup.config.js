@@ -2,22 +2,18 @@ import babel from 'rollup-plugin-babel';
 import pkg from './package.json';
 
 export default {
-    entry: './src/index.js',
-
+    input: './src/index.js',
     plugins: [babel()],
-
-    external: ['react', 'redux', 'react-redux', 'prop-types', 'moize', 'hoist-non-react-statics'],
-
-    targets: [
+    external: Object.keys(pkg.dependencies).concat(Object.keys(pkg.peerDependencies)),
+    sourcemap: true,
+    output: [
         {
-            dest: pkg.main,
+            file: pkg.main,
             format: 'cjs',
-            sourceMap: true,
         },
         {
-            dest: pkg.module,
+            file: pkg.module,
             format: 'es',
-            sourceMap: true,
         },
     ],
 };
