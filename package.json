@@ -10,18 +10,17 @@
   },
   "main": "./dist/redux-status.cjs.js",
   "module": "./dist/redux-status.esm.js",
-  "jsnext:main": "./dist/redux-status.esm.js",
   "scripts": {
     "build": "rimraf dist/ && cross-env NODE_ENV=production rollup -c",
     "test": "jest",
     "lint": "eslint \"**/*.js\"",
     "prettier": "prettier-eslint \"**/*.js\" --write",
-    "prepublishOnly": "yarn run lint && yarn run build && yarn run test"
+    "prepublishOnly": "yarn lint && yarn build && yarn test"
   },
   "dependencies": {
-    "hoist-non-react-statics": "^2.2.1",
-    "moize": "^3.3.0",
-    "prop-types": "^15.5.10"
+    "hoist-non-react-statics": "^2.3.1",
+    "moize": "^4.0.0",
+    "prop-types": "^15.6.0"
   },
   "devDependencies": {
     "babel-eslint": "^7.2.3",
@@ -29,23 +28,23 @@
     "babel-preset-env": "^1.6.0",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
-    "cross-env": "^5.0.1",
-    "eslint": "^4.3.0",
+    "cross-env": "^5.0.5",
+    "eslint": "^4.8.0",
     "eslint-config-airbnb": "^15.1.0",
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-jsx-a11y": "5.1.0",
-    "eslint-plugin-react": "^7.1.0",
-    "jest": "^20.0.4",
-    "prettier-eslint-cli": "^4.1.1",
-    "react": "^15.6.1",
-    "react-redux": "^5.0.5",
+    "eslint-plugin-react": "^7.4.0",
+    "jest": "^21.2.1",
+    "prettier-eslint-cli": "^4.4.0",
+    "react": "^16.0.0",
+    "react-redux": "^5.0.6",
     "redux": "^3.7.2",
-    "rimraf": "^2.6.1",
-    "rollup": "^0.45.2",
-    "rollup-plugin-babel": "^2.7.1"
+    "rimraf": "^2.6.2",
+    "rollup": "0.48.2",
+    "rollup-plugin-babel": "^3.0.2"
   },
   "peerDependencies": {
-    "react": ">=15",
+    "react": ">=15.5",
     "react-redux": "^5.0.0",
     "redux": "^3.0.0"
   },

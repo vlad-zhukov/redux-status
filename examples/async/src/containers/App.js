@@ -36,17 +36,20 @@ class App extends Component {
                     options={['reactjs', 'frontend']}
                 />
                 <p>
-                    {lastUpdated &&
-                        <span>
-                            Last updated at {new Date(lastUpdated).toLocaleTimeString()}.{' '}
-                        </span>}
+                    {lastUpdated && <span>Last updated at {new Date(lastUpdated).toLocaleTimeString()}. </span>}
                     {!isFetching && <button onClick={refresh}>Refresh</button>}
                 </p>
-                {!value // eslint-disable-line no-nested-ternary
-                    ? isFetching ? <h2>Loading...</h2> : <h2>Empty.</h2>
-                    : <div style={{opacity: isFetching ? 0.5 : 1}}>
+                {!value ? ( // eslint-disable-line no-nested-ternary
+                    isFetching ? (
+                        <h2>Loading...</h2>
+                    ) : (
+                        <h2>Empty.</h2>
+                    )
+                ) : (
+                    <div style={{opacity: isFetching ? 0.5 : 1}}>
                         <Posts posts={value} />
-                    </div>}
+                    </div>
+                )}
             </div>
         );
     }
@@ -61,7 +64,9 @@ export default reduxStatus({
         [props.status.reddit]: {
             args: [props.status.reddit],
             promise: reddit =>
-                fetch(`https://www.reddit.com/r/${reddit}.json`).then(res => res.json()).then(res => res.data.children),
+                fetch(`https://www.reddit.com/r/${reddit}.json`)
+                    .then(res => res.json())
+                    .then(res => res.data.children),
             maxAge: 10000,
             maxArgs: 1,
         },

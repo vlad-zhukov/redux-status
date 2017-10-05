@@ -67,8 +67,7 @@ export default function reduxStatus(options = {}) {
                 }
             }
 
-            memoized
-                [key](...args) // eslint-disable-line no-unexpected-multiline
+            memoized[key](...args)
                 .then((result) => {
                     props.setStatus({
                         [key]: promiseState.fulfilled(result),
@@ -175,13 +174,13 @@ export default function reduxStatus(options = {}) {
                 this.props.setStatusTo(name, payload);
             }
 
-            refresh = () => {
-                callPromises(this.props, false, true);
-            };
-
             get status() {
                 return this.props.status;
             }
+
+            refresh = () => {
+                callPromises(this.props, false, true);
+            };
 
             render() {
                 const {name, statusRef, wrappedRef, status, initialValues, asyncValues, ...rest} = this.props;
