@@ -25,7 +25,7 @@ class App extends Component {
 
     render() {
         const {status, refresh} = this.props;
-        const {pending, refreshing, value, lastUpdated} = status[status.reddit];
+        const {pending, refreshing, value, lastUpdated} = status[status.reddit] || {};
         const isFetching = pending || refreshing;
 
         return (
@@ -57,6 +57,7 @@ class App extends Component {
 
 export default reduxStatus({
     name: 'Async',
+    autoRefresh: false,
     initialValues: {
         reddit: 'reactjs',
     },

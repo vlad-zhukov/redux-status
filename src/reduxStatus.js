@@ -45,17 +45,21 @@ export default function reduxStatus(options = {}) {
                 return;
             }
 
-            const moized = memoized[key];
             const args = type(asyncValue.args) === 'array' ? asyncValue.args : [];
 
-            if (isForced === false && isMounting === false && moized !== undefined && moized.has(args) === true) {
-                return;
-            }
-
-            if (moized !== undefined) {
-                props.setStatus(s => ({
-                    [key]: promiseState.refreshing(s[key]),
-                }));
+            if (memoized[key] !== undefined) {
+                if (memoized[key].has(args) === true) {
+                    // When the value is cached and an update is not forced
+                    if (isForced === false && isMounting === false) {
+                        return;
+                    }
+                }
+                else {
+                    // Only set to refreshing when the result is not cached
+                    props.setStatus(s => ({
+                        [key]: promiseState.refreshing(s[key]),
+                    }));
+                }
             }
             else {
                 memoizeAsyncValue(key, asyncValue);
@@ -158,10 +162,12 @@ export default function reduxStatus(options = {}) {
                 const asyncKeys = Object.keys(asyncValues);
                 if (asyncKeys.length === 0) return true;
 
-                // If one of async values hasn't been added to the status yet, prevent the update
-                for (let i = 0, l = asyncKeys.length; i < l; i++) {
-                    if (nextProps.status[asyncKeys[i]] === undefined) {
-                        return false;
+                if (nextProps.autoRefresh !== false) {
+                    // If one of async values hasn't been added to the status yet, prevent the update
+                    for (let i = 0, l = asyncKeys.length; i < l; i++) {
+                        if (nextProps.status[asyncKeys[i]] === undefined) {
+                            return false;
+                        }
                     }
                 }
 
@@ -185,6 +191,7 @@ export default function reduxStatus(options = {}) {
             }
 
             refresh = () => {
+                // Always forces an update
                 callPromises(this.props, false, true);
             };
 
