@@ -13,16 +13,18 @@ export default function reduxStatus(options = {}) {
         const memoized = {};
 
         function memoizeAsyncValue(key, value) {
-            if (type(value) !== 'object') {
+            const typeOfValue = type(value);
+            if (typeOfValue !== 'object') {
                 throw new TypeError(
-                    `ReduxStatus: argument 'values' must return an object of objects, but got: '${type(value)}'.`
+                    `ReduxStatus: argument 'values' must return an object of objects, but got: '${typeOfValue}'.`
                 );
             }
 
-            if (type(value.promise) !== 'function') {
+            const typeOfValuePromise = type(value.promise);
+            if (typeOfValuePromise !== 'function') {
                 throw new TypeError(
                     "ReduxStatus: argument 'values' must return an object of objects with a property 'promise' " +
-                        `each, but got: '${type(value.promise)}'.`
+                        `each, but got: '${typeOfValuePromise}'.`
                 );
             }
 
@@ -102,10 +104,11 @@ export default function reduxStatus(options = {}) {
 
         const connector = connect(
             (state, props) => {
-                if (type(props.name) !== 'string') {
+                const typeOfName = type(props.name);
+                if (typeOfName !== 'string') {
                     throw new TypeError(
                         "ReduxStatus: Argument 'name' is required and must be a 'string'," +
-                            `but got: '${type(props.name)}'.`
+                            `but got: '${typeOfName}'.`
                     );
                 }
 
@@ -197,7 +200,11 @@ export default function reduxStatus(options = {}) {
 
             render() {
                 const {name, statusRef, wrappedRef, status, initialValues, asyncValues, ...rest} = this.props;
-                if (status === undefined) return null;
+
+                if (status === undefined) {
+                    return null;
+                }
+
                 return (
                     <WrappedComponent
                         {...rest}

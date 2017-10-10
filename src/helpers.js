@@ -16,9 +16,10 @@ export function extractAsyncValues(props) {
 
     const values = props.asyncValues(props);
 
-    if (type(values) !== 'object') {
+    const typeOfValues = type(values);
+    if (typeOfValues !== 'object') {
         throw new TypeError(
-            `ReduxStatus: property 'asyncValues' must be a function that returns an object, but got: '${type(values)}'.`
+            `ReduxStatus: property 'asyncValues' must be a function that returns an object, but got: '${typeOfValues}'.`
         );
     }
 
