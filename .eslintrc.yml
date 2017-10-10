@@ -16,6 +16,8 @@ rules:
     no-plusplus: [error, {allowForLoopAfterthoughts: true}]
     no-use-before-define: [error, {variables: false}]
     object-curly-spacing: [error, never]
+    object-curly-newline: off
+    function-paren-newline: off
     no-console: off
 
     react/jsx-filename-extension: [warn, {extensions: [.js]}]

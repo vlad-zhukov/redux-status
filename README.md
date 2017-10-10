@@ -219,11 +219,11 @@ __Async usage__
 
 ```jsx
 import React, {PureComponent} from 'react';
-import {reduxStatusAsync} from 'redux-status';
+import {reduxStatus} from 'redux-status';
 
-@reduxStatusAsync({
+@reduxStatus({
     name: 'Async', // 'name' is required
-    values: props => ({ // 'values' is required too
+    asyncValues: props => ({ // 'values' is required too
         [props.reddit]: {
             args: [props.reddit],
             promise: reddit => fetch(`https://www.reddit.com/r/${reddit}.json`)

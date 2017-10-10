@@ -172,16 +172,16 @@ export default function reduxStatus(options = {}) {
                 this.props.destroy();
             }
 
+            get status() {
+                return this.props.status;
+            }
+
             setStatus(payload) {
                 this.props.setStatus(payload);
             }
 
             setStatusTo(name, payload) {
                 this.props.setStatusTo(name, payload);
-            }
-
-            get status() {
-                return this.props.status;
             }
 
             refresh = () => {
