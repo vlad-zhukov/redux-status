@@ -2,6 +2,7 @@ export const getDisplayName = Comp => Comp.displayName || Comp.name || 'Unknown'
 
 export function type(value) {
     if (value === null) return 'null';
+    if (value === undefined) return 'undefined';
     const typeofValue = typeof value;
     if (typeofValue !== 'object') return typeofValue;
     if (Array.isArray(value) === true) return 'array';

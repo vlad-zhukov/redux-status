@@ -10,6 +10,7 @@ Redux and React.
 - [Examples](#examples)
 - [API](#api)
   - [`reduxStatus(options)`](#reduxstatusoptions)
+  - [`promiseState`](#promiseState)
   - [`reducer`](#reducer)
   - [`selectors`](#selectors)
   - [`actions`](#actions)
@@ -342,6 +343,19 @@ An object with Redux action types.
 - `DESTROY` _(String)_
 - `UPDATE` _(String)_
 - `prefix` _(String)_
+
+---
+
+### `promiseState`
+
+A set of functions that are used internally to represent states of
+async values. These are not intended for public usage.
+
+- `pending(): PromiseStates`
+- `refreshing(previous?: PromiseState): PromiseState`
+- `fulfilled(valueOrPromiseState: any): PromiseState`
+- `rejected(reason: any): PromiseState`
+- `isPromiseState(maybePromiseState: any): boolean`
 
 ---
 

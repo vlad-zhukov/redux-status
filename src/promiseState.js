@@ -1,4 +1,4 @@
-/* eslint-disable no-shadow */
+import {type} from './helpers';
 
 /**
  * Constructor for creating a new promiseState.
@@ -11,10 +11,10 @@
  * @returns {Object}
  */
 function create({
-    pending = false,
-    refreshing = false,
-    fulfilled = false,
-    rejected = false,
+    pending = false, // eslint-disable-line no-shadow
+    refreshing = false, // eslint-disable-line no-shadow
+    fulfilled = false, // eslint-disable-line no-shadow
+    rejected = false, // eslint-disable-line no-shadow
     value = null,
     reason = null,
 }) {
@@ -26,6 +26,20 @@ function create({
         value,
         reason,
     };
+}
+
+/**
+ * Checks if a passed value is a promiseState-like object.
+ * @param maybePromiseState {*}
+ * @returns {Boolean}
+ */
+export function isPromiseState(maybePromiseState) {
+    if (type(maybePromiseState) !== 'object') {
+        return false;
+    }
+
+    const propertyNames = ['pending', 'refreshing', 'fulfilled', 'rejected'];
+    return propertyNames.every(propertyName => type(maybePromiseState[propertyName]) === 'boolean');
 }
 
 /**
@@ -42,24 +56,19 @@ export function pending() {
  * @param [previous] {Object}
  * @returns {Object}
  */
-export function refreshing(previous = pending()) {
-    return create({
-        pending: previous.pending,
-        refreshing: true,
-        fulfilled: previous.fulfilled,
-        rejected: previous.rejected,
-        value: previous.value,
-        reason: previous.reason,
-    });
+export function refreshing(previous) {
+    const previousPromiseState = isPromiseState(previous) ? previous : pending();
+    return create({...previousPromiseState, refreshing: true});
 }
 
 /**
  * Creates a promiseState that is resolved with the given value.
- * If the given value is already a promiseState, it will be returned as is and ignore the provided meta.
- * @param [value] {*}
+ * If the given value is already a promiseState, its `value` property will be used instead.
+ * @param [valueOrPromiseState] {*}
  * @returns {Object}
  */
-export function fulfilled(value) {
+export function fulfilled(valueOrPromiseState) {
+    const value = isPromiseState(valueOrPromiseState) ? valueOrPromiseState.value : valueOrPromiseState;
     return create({fulfilled: true, value});
 }
 
