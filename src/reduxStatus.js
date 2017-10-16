@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import moize from 'moize';
 import hoistStatics from 'hoist-non-react-statics';
+import {elementsEqual} from 'react-shallow-equal';
 import * as actionCreators from './actionCreators';
 import {getStatusValue} from './selectors';
 import * as promiseState from './promiseState';
@@ -36,7 +37,7 @@ export default function reduxStatus(options = {}) {
             });
         }
 
-        function callPromise(props, key, asyncValue, isMounting, isForced) {
+        function callPromise({props, key, asyncValue, prevAsyncValue, isMounting, isForced}) {
             // Do not recall rejected (uncached) promises unless forced
             if (
                 isForced === false &&
@@ -48,11 +49,11 @@ export default function reduxStatus(options = {}) {
             }
 
             const args = type(asyncValue.args) === 'array' ? asyncValue.args : [];
+            const prevArgs = type(prevAsyncValue.args) === 'array' ? prevAsyncValue.args : [];
 
             if (memoized[key] !== undefined) {
                 if (memoized[key].has(args) === true) {
-                    // When the value is cached and an update is not forced
-                    if (isForced === false && isMounting === false) {
+                    if (isMounting === false && elementsEqual(args, prevArgs)) {
                         return;
                     }
                 }
@@ -86,19 +87,21 @@ export default function reduxStatus(options = {}) {
                 });
         }
 
-        function callPromises(props, isMounting = false, isForced = false) {
+        function callPromises({props, prevProps, isMounting = false, isForced = false}) {
             // Stop auto-refreshing
             if (props.autoRefresh === false && isForced === false) {
                 return;
             }
 
             const asyncValues = extractAsyncValues(props);
+            const prevAsyncValues = extractAsyncValues(prevProps);
             const asyncKeys = Object.keys(asyncValues);
             for (let i = 0, l = asyncKeys.length; i < l; i++) {
                 const key = asyncKeys[i];
                 const asyncValue = asyncValues[key];
+                const prevAsyncValue = prevAsyncValues[key];
 
-                callPromise(props, key, asyncValue, isMounting, isForced);
+                callPromise({props, key, asyncValue, prevAsyncValue, isMounting, isForced});
             }
         }
 
@@ -151,11 +154,11 @@ export default function reduxStatus(options = {}) {
 
                 this.props.statusRef(this);
                 this.props.initialize(fakeProps);
-                callPromises(fakeProps, true);
+                callPromises({props: fakeProps, isMounting: true});
             }
 
             componentWillReceiveProps(nextProps) {
-                callPromises(nextProps);
+                callPromises({props: nextProps, prevProps: this.props});
             }
 
             shouldComponentUpdate(nextProps) {
@@ -195,7 +198,7 @@ export default function reduxStatus(options = {}) {
 
             refresh = () => {
                 // Always forces an update
-                callPromises(this.props, false, true);
+                callPromises({props: this.props, isForced: true});
             };
 
             render() {
