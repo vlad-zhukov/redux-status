@@ -94,12 +94,12 @@ export default function reduxStatus(options = {}) {
             }
 
             const asyncValues = extractAsyncValues(props);
-            const prevAsyncValues = extractAsyncValues(prevProps);
+            const prevAsyncValues = prevProps ? extractAsyncValues(prevProps) : null;
             const asyncKeys = Object.keys(asyncValues);
             for (let i = 0, l = asyncKeys.length; i < l; i++) {
                 const key = asyncKeys[i];
                 const asyncValue = asyncValues[key];
-                const prevAsyncValue = prevAsyncValues[key];
+                const prevAsyncValue = prevAsyncValues ? prevAsyncValues[key] : null;
 
                 callPromise({props, key, asyncValue, prevAsyncValue, isMounting, isForced});
             }
