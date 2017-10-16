@@ -37,7 +37,7 @@ export default function reduxStatus(options = {}) {
             });
         }
 
-        function callPromise({props, key, asyncValue, prevAsyncValue, isMounting, isForced}) {
+        function callPromise({props, key, asyncValue, prevArgs, isMounting, isForced}) {
             // Do not recall rejected (uncached) promises unless forced
             if (
                 isForced === false &&
@@ -49,7 +49,6 @@ export default function reduxStatus(options = {}) {
             }
 
             const args = type(asyncValue.args) === 'array' ? asyncValue.args : [];
-            const prevArgs = type(prevAsyncValue.args) === 'array' ? prevAsyncValue.args : [];
 
             if (memoized[key] !== undefined) {
                 if (memoized[key].has(args) === true) {
@@ -99,9 +98,11 @@ export default function reduxStatus(options = {}) {
             for (let i = 0, l = asyncKeys.length; i < l; i++) {
                 const key = asyncKeys[i];
                 const asyncValue = asyncValues[key];
-                const prevAsyncValue = prevAsyncValues ? prevAsyncValues[key] : null;
 
-                callPromise({props, key, asyncValue, prevAsyncValue, isMounting, isForced});
+                const prevArgs =
+                    prevAsyncValues && type(prevAsyncValues[key].args) === 'array' ? prevAsyncValues[key].args : [];
+
+                callPromise({props, key, asyncValue, prevArgs, isMounting, isForced});
             }
         }
 
@@ -110,8 +111,7 @@ export default function reduxStatus(options = {}) {
                 const typeOfName = type(props.name);
                 if (typeOfName !== 'string') {
                     throw new TypeError(
-                        "ReduxStatus: Argument 'name' is required and must be a 'string'," +
-                            `but got: '${typeOfName}'.`
+                        `ReduxStatus: Argument 'name' is required and must be a 'string', but got: '${typeOfName}'.`
                     );
                 }
 
