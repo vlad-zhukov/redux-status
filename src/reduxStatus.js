@@ -13,7 +13,7 @@ export default function reduxStatus(options = {}) {
     return (WrappedComponent) => {
         const memoized = {};
 
-        function memoizeAsyncValue(key, value) {
+        function memoizeAsyncValue(key, value, onExpire) {
             const typeOfValue = type(value);
             if (typeOfValue !== 'object') {
                 throw new TypeError(
@@ -34,10 +34,11 @@ export default function reduxStatus(options = {}) {
                 maxAge: value.maxAge,
                 maxArgs: value.maxArgs,
                 maxSize: value.maxSize,
+                onExpire,
             });
         }
 
-        function callPromise({props, key, asyncValue, prevArgs, isMounting, isForced}) {
+        function callPromise({props, key, asyncValue, prevArgs, onExpire, isMounting, isForced}) {
             // Do not recall rejected (uncached) promises unless forced
             if (
                 isForced === false &&
@@ -64,7 +65,7 @@ export default function reduxStatus(options = {}) {
                 }
             }
             else {
-                memoizeAsyncValue(key, asyncValue);
+                memoizeAsyncValue(key, asyncValue, onExpire);
 
                 if (isMounting === false) {
                     props.setStatus({
@@ -86,14 +87,14 @@ export default function reduxStatus(options = {}) {
                 });
         }
 
-        function callPromises({props, prevProps, isMounting = false, isForced = false}) {
+        function callPromises({props, prevProps, onExpire, isMounting = false, isForced = false}) {
             // Stop auto-refreshing
             if (props.autoRefresh === false && isForced === false) {
                 return;
             }
 
             const asyncValues = extractAsyncValues(props);
-            const prevAsyncValues = prevProps ? extractAsyncValues(prevProps) : null;
+            const prevAsyncValues = prevProps && prevProps.status ? extractAsyncValues(prevProps) : null;
             const asyncKeys = Object.keys(asyncValues);
             for (let i = 0, l = asyncKeys.length; i < l; i++) {
                 const key = asyncKeys[i];
@@ -102,7 +103,7 @@ export default function reduxStatus(options = {}) {
                 const prevArgs =
                     prevAsyncValues && type(prevAsyncValues[key].args) === 'array' ? prevAsyncValues[key].args : [];
 
-                callPromise({props, key, asyncValue, prevArgs, isMounting, isForced});
+                callPromise({props, key, asyncValue, prevArgs, onExpire, isMounting, isForced});
             }
         }
 
@@ -154,11 +155,7 @@ export default function reduxStatus(options = {}) {
 
                 this.props.statusRef(this);
                 this.props.initialize(fakeProps);
-                callPromises({props: fakeProps, isMounting: true});
-            }
-
-            componentWillReceiveProps(nextProps) {
-                callPromises({props: nextProps, prevProps: this.props});
+                callPromises({props: fakeProps, onExpire: () => this.forceUpdate(), isMounting: true});
             }
 
             shouldComponentUpdate(nextProps) {
@@ -178,6 +175,10 @@ export default function reduxStatus(options = {}) {
                 }
 
                 return true;
+            }
+
+            componentWillUpdate(nextProps) {
+                callPromises({props: nextProps, prevProps: this.props, onExpire: () => this.forceUpdate()});
             }
 
             componentWillUnmount() {
