@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import moize from 'moize';
@@ -128,7 +128,7 @@ export default function reduxStatus(options = {}) {
             })
         );
 
-        class ReduxStatus extends Component {
+        class ReduxStatus extends React.Component {
             static displayName = `ReduxStatus(${getDisplayName(WrappedComponent)})`;
 
             /* eslint-disable react/require-default-props, react/forbid-prop-types */
