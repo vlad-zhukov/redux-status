@@ -13,11 +13,11 @@
     "react-dom": "^16.0.0",
     "react-redux": "^5.0.6",
     "redux": "^3.7.2",
-    "redux-status": "^0.7.6"
+    "redux-status": "^0.10.2"
   },
   "devDependencies": {
     "enzyme": "^3.1.0",
-    "enzyme-adapter-react-16": "^1.0.1",
+    "enzyme-adapter-react-16": "^1.0.2",
     "react-scripts": "^1.0.14",
     "react-test-renderer": "^16.0.0"
   }
