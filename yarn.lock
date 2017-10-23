@@ -2830,9 +2830,9 @@ minimist@~0.0.1:
   dependencies:
     minimist "0.0.8"
 
-moize@3.5.0:
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/moize/-/moize-3.5.0.tgz#28b32be875be88a92bddc6765fb5def989708d73"
+moize@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/moize/-/moize-4.0.1.tgz#c131fa7079fba15d85b31e5c55cd09532bcdb8cc"
 
 ms@2.0.0:
   version "2.0.0"
