@@ -24,10 +24,10 @@
     "react-shallow-equal": "^0.1.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.0.0-beta.39",
-    "@babel/preset-env": "^7.0.0-beta.39",
-    "@babel/preset-react": "^7.0.0-beta.39",
-    "@babel/preset-stage-2": "^7.0.0-beta.39",
+    "@babel/core": "^7.0.0-beta.40",
+    "@babel/preset-env": "^7.0.0-beta.40",
+    "@babel/preset-react": "^7.0.0-beta.40",
+    "@babel/preset-stage-2": "^7.0.0-beta.40",
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^8.2.1",
     "babel-jest": "^22.2.2",
