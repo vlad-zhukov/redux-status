@@ -9,104 +9,104 @@ import {getStatusValue} from './selectors';
 import * as promiseState from './promiseState';
 import {getDisplayName, type, extractAsyncValues} from './helpers';
 
-export default function reduxStatus(options = {}) {
-    return (WrappedComponent) => {
-        const memoized = {};
+const memoized = {};
 
-        function memoizeAsyncValue(key, value, onExpire) {
-            const typeOfValue = type(value);
-            if (typeOfValue !== 'object') {
-                throw new TypeError(
-                    `ReduxStatus: argument 'values' must return an object of objects, but got: '${typeOfValue}'.`
-                );
+function memoizeAsyncValue(key, value, onExpire) {
+    const typeOfValue = type(value);
+    if (typeOfValue !== 'object') {
+        throw new TypeError(
+            `ReduxStatus: argument 'values' must return an object of objects, but got: '${typeOfValue}'.`
+        );
+    }
+
+    const typeOfValuePromise = type(value.promise);
+    if (typeOfValuePromise !== 'function') {
+        throw new TypeError(
+            "ReduxStatus: argument 'values' must return an object of objects with a property 'promise' " +
+                `each, but got: '${typeOfValuePromise}'.`
+        );
+    }
+
+    memoized[key] = moize(value.promise, {
+        isPromise: true,
+        maxAge: value.maxAge,
+        maxArgs: value.maxArgs,
+        maxSize: value.maxSize,
+        onExpire,
+    });
+}
+
+function callPromise({props, key, asyncValue, prevArgs, onExpire, isMounting, isForced}) {
+    // Do not recall rejected (uncached) promises unless forced
+    if (
+        isForced === false &&
+        props.status !== undefined &&
+        props.status[key] !== undefined &&
+        props.status[key].rejected === true
+    ) {
+        return;
+    }
+
+    const args = type(asyncValue.args) === 'array' ? asyncValue.args : [];
+
+    if (memoized[key] !== undefined) {
+        if (memoized[key].has(args) === true) {
+            if (isMounting === false && elementsEqual(args, prevArgs)) {
+                return;
             }
+        }
+        else {
+            // Only set to refreshing when the result is not cached
+            props.setStatus(s => ({
+                [key]: promiseState.refreshing(s[key]),
+            }));
+        }
+    }
+    else {
+        memoizeAsyncValue(key, asyncValue, onExpire);
 
-            const typeOfValuePromise = type(value.promise);
-            if (typeOfValuePromise !== 'function') {
-                throw new TypeError(
-                    "ReduxStatus: argument 'values' must return an object of objects with a property 'promise' " +
-                        `each, but got: '${typeOfValuePromise}'.`
-                );
-            }
-
-            memoized[key] = moize(value.promise, {
-                isPromise: true,
-                maxAge: value.maxAge,
-                maxArgs: value.maxArgs,
-                maxSize: value.maxSize,
-                onExpire,
+        if (isMounting === false) {
+            props.setStatus({
+                [key]: promiseState.pending(),
             });
         }
+    }
 
-        function callPromise({props, key, asyncValue, prevArgs, onExpire, isMounting, isForced}) {
-            // Do not recall rejected (uncached) promises unless forced
-            if (
-                isForced === false &&
-                props.status !== undefined &&
-                props.status[key] !== undefined &&
-                props.status[key].rejected === true
-            ) {
-                return;
-            }
+    memoized[key](...args)
+        .then((result) => {
+            props.setStatus({
+                [key]: promiseState.fulfilled(result),
+            });
+        })
+        .catch((e) => {
+            props.setStatus({
+                [key]: promiseState.rejected(e.message),
+            });
+        });
+}
 
-            const args = type(asyncValue.args) === 'array' ? asyncValue.args : [];
+function callPromises({props, prevProps, onExpire, isMounting = false, isForced = false}) {
+    // Stop auto-refreshing
+    if (props.autoRefresh === false && isForced === false) {
+        return;
+    }
 
-            if (memoized[key] !== undefined) {
-                if (memoized[key].has(args) === true) {
-                    if (isMounting === false && elementsEqual(args, prevArgs)) {
-                        return;
-                    }
-                }
-                else {
-                    // Only set to refreshing when the result is not cached
-                    props.setStatus(s => ({
-                        [key]: promiseState.refreshing(s[key]),
-                    }));
-                }
-            }
-            else {
-                memoizeAsyncValue(key, asyncValue, onExpire);
+    const asyncValues = extractAsyncValues(props);
+    const prevAsyncValues = prevProps && prevProps.status ? extractAsyncValues(prevProps) : null;
+    const asyncKeys = Object.keys(asyncValues);
+    for (let i = 0, l = asyncKeys.length; i < l; i++) {
+        const key = asyncKeys[i];
+        const asyncValue = asyncValues[key];
 
-                if (isMounting === false) {
-                    props.setStatus({
-                        [key]: promiseState.pending(),
-                    });
-                }
-            }
+        const prevArgs =
+            prevAsyncValues && type(prevAsyncValues[key].args) === 'array' ? prevAsyncValues[key].args : [];
 
-            memoized[key](...args)
-                .then((result) => {
-                    props.setStatus({
-                        [key]: promiseState.fulfilled(result),
-                    });
-                })
-                .catch((e) => {
-                    props.setStatus({
-                        [key]: promiseState.rejected(e.message),
-                    });
-                });
-        }
+        callPromise({props, key, asyncValue, prevArgs, onExpire, isMounting, isForced});
+    }
+}
 
-        function callPromises({props, prevProps, onExpire, isMounting = false, isForced = false}) {
-            // Stop auto-refreshing
-            if (props.autoRefresh === false && isForced === false) {
-                return;
-            }
-
-            const asyncValues = extractAsyncValues(props);
-            const prevAsyncValues = prevProps && prevProps.status ? extractAsyncValues(prevProps) : null;
-            const asyncKeys = Object.keys(asyncValues);
-            for (let i = 0, l = asyncKeys.length; i < l; i++) {
-                const key = asyncKeys[i];
-                const asyncValue = asyncValues[key];
-
-                const prevArgs =
-                    prevAsyncValues && type(prevAsyncValues[key].args) === 'array' ? prevAsyncValues[key].args : [];
-
-                callPromise({props, key, asyncValue, prevArgs, onExpire, isMounting, isForced});
-            }
-        }
-
+export default function reduxStatus(options = {}) {
+    return (WrappedComponent) => {
         const connector = connect(
             (state, props) => {
                 const typeOfName = type(props.name);
